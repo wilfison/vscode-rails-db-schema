@@ -1,13 +1,15 @@
 import * as vscode from "vscode";
 
-export function getSchemaUri(): vscode.Uri | undefined {
+export async function getSchemaUris(): Promise<vscode.Uri[]> {
   const workspaceFolders = vscode.workspace.workspaceFolders;
+
   if (workspaceFolders === undefined || workspaceFolders.length === 0) {
-    return;
+    return [];
   }
 
-  const workspacePath = workspaceFolders[0].uri.path;
-  return vscode.Uri.file(workspacePath + "/db/schema.rb");
+  const schemaFiles = vscode.workspace.findFiles("**/db/*schema.rb", "**/node_modules/**");
+
+  return schemaFiles;
 }
 
 export function getCurrentTableName(): string | null {

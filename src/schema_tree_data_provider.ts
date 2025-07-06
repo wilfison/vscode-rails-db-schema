@@ -16,7 +16,7 @@ export default class SchemaTreeDataProvider implements vscode.TreeDataProvider<S
   readonly onDidChangeTreeData: vscode.Event<SchemaNode | undefined | null | void> =
     this._onDidChangeTreeData.event;
 
-  constructor(private readonly model: SchemaModel) {}
+  constructor(public model: SchemaModel) {}
 
   public refresh(): any {
     this.model.refreshSchema();

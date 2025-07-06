@@ -1,68 +1,72 @@
 import * as vscode from "vscode";
 import SchemaNode from "./schema_node";
 
-import { getSchemaUri } from "./file_utils";
-
 export default class SchemaModel {
-  data: SchemaNode[];
-  callback: Function;
+  public data: SchemaNode[];
+  public readonly uri: vscode.Uri;
 
-  constructor(callback: Function) {
+  constructor(uri: vscode.Uri) {
     this.data = [];
-    this.callback = callback;
-    this.getRailsSchema();
+    this.uri = uri;
   }
 
-  public refreshSchema(): void {
-    this.getRailsSchema();
+  public schemaFIleName(): string {
+    return this.uri.fsPath.split("/").pop() || "schema.rb";
   }
 
-  public getRailsSchema(): void {
-    const uri = getSchemaUri();
+  public async refreshSchema(): Promise<void> {
+    this.data = [];
 
-    if (uri === undefined) {
+    await this.getRailsSchema();
+  }
+
+  public async getRailsSchema(): Promise<void> {
+    if (this.uri.fsPath === "/") {
       return;
     }
 
-    vscode.workspace.openTextDocument(uri).then(
-      (document) => {
-        const schemaText = document.getText();
+    const document = await vscode.workspace.openTextDocument(this.uri);
 
-        const tablesRegex = /create_table([\s\S]*?)(  end)/g;
-        const tableNameRegex = /(?<=create_table ")([\s\S]*?)(?=("))/g;
-        const tableDefinitionRegex = /(?=create_table )([\s\S]*?)(do)/g;
-        const commentsInfoRegex = /(?=comment: )([\s\S]*?)(?=(" do)|(",))/;
+    try {
+      const schemaText = document.getText();
+      const tablesRegex = /create_table([\s\S]*?)(  end)/g;
+      const tablesRegexMatch = schemaText.match(tablesRegex);
 
-        const tablesRegexMatch = schemaText.match(tablesRegex);
-        if (tablesRegexMatch === null || tablesRegexMatch.length === 0) {
-          return;
-        }
+      if (tablesRegexMatch === null || tablesRegexMatch.length === 0) {
+        return;
+      }
 
-        const schemaNodes = tablesRegexMatch.map((tableText) => {
-          const tableLableMatch = tableText.match(tableNameRegex);
-          const tableDefinitionMatch = tableText.match(tableDefinitionRegex);
-          const commentsInfo = tableDefinitionMatch
-            ? tableDefinitionMatch[0].match(commentsInfoRegex)
-            : "";
-          const children = this.getTableFields(tableText);
-          const label = tableLableMatch ? tableLableMatch[0] : "";
-          const tooltip = commentsInfo ? `${commentsInfo[0]}"` : "";
-          return {
-            label: label,
-            type: null,
-            tooltip: tooltip,
-            isTable: true,
-            children: children,
-            parent: undefined,
-          };
-        });
+      const schemaNodes = this.getSchemaNodes(tablesRegexMatch);
+      this.data = schemaNodes;
+    } catch (_err) {
+      vscode.window.showInformationMessage(`Error parsing schema file: ${this.schemaFIleName()}`);
+    }
+  }
 
-        this.data = schemaNodes;
-        this.callback();
-      },
-      (_err) =>
-        vscode.window.showInformationMessage("Cannot find db/schema.rb file in the workspace")
-    );
+  private getSchemaNodes(tablesRegexMatch: RegExpMatchArray): SchemaNode[] {
+    const tableNameRegex = /(?<=create_table ")([\s\S]*?)(?=("))/g;
+    const tableDefinitionRegex = /(?=create_table )([\s\S]*?)(do)/g;
+    const commentsInfoRegex = /(?=comment: )([\s\S]*?)(?=(" do)|(",))/;
+
+    return tablesRegexMatch.map((tableText) => {
+      const tableLableMatch = tableText.match(tableNameRegex);
+      const tableDefinitionMatch = tableText.match(tableDefinitionRegex);
+      const commentsInfo = tableDefinitionMatch
+        ? tableDefinitionMatch[0].match(commentsInfoRegex)
+        : "";
+      const children = this.getTableFields(tableText);
+      const label = tableLableMatch ? tableLableMatch[0] : "";
+      const tooltip = commentsInfo ? `${commentsInfo[0]}"` : "";
+      return {
+        label: label,
+        type: null,
+        tooltip: tooltip,
+        isTable: true,
+        children: children,
+        parent: undefined,
+        schemaUri: this.uri,
+      };
+    });
   }
 
   private getTableFields(tableText: string): SchemaNode[] {

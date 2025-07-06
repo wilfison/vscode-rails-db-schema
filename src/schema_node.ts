@@ -5,7 +5,7 @@ interface SchemaNode {
   type: string | null;
   description?: string;
   tooltip?: string;
-  resourceUri?: Uri;
+  schemaUri?: Uri;
   isTable: boolean;
   isPrimaryKey?: boolean;
   children: SchemaNode[];
