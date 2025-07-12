@@ -74,17 +74,8 @@ If you encounter any issues or have feature requests, please file them on the [G
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Release Notes
+## Thanks
 
-### 1.0.0
-
-- Initial release
-- Schema tree view for Rails database tables
-- Real-time schema file watching
-- Search functionality for tables
-- Quick navigation to table definitions
-- Multi-workspace support
-
----
+Special thanks to [Gustavo Delgado](https://github.com/tavo/vscode-rails-schema-extension) for the inspiration and initial implementation of this extension.
 
 **Enjoy exploring your Rails database schema!**
