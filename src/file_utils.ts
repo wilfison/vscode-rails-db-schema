@@ -7,7 +7,8 @@ export async function getSchemaUris(): Promise<vscode.Uri[]> {
     return [];
   }
 
-  const schemaFiles = await vscode.workspace.findFiles("**/db/*schema.rb", "**/node_modules/**");
+  let schemaFiles = await vscode.workspace.findFiles("**/db/*schema.rb", "**/node_modules/**");
+  schemaFiles = schemaFiles.sort((a, b) => a.fsPath.localeCompare(b.fsPath));
 
   return schemaFiles.reverse();
 }
