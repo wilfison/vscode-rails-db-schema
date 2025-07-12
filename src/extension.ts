@@ -7,15 +7,40 @@ export function activate(context: vscode.ExtensionContext) {
   const schemaExplorer = new SchemaExplorer();
   schemaExplorer.initialize();
 
-  let watcher = vscode.workspace.createFileSystemWatcher(
-    new vscode.RelativePattern(
-      vscode.workspace.workspaceFolders?.[0].uri.path || "",
-      "**/*schema.rb"
-    )
-  );
+  let refreshTimeout: NodeJS.Timeout | undefined;
+  const DEBOUNCE_DELAY = 1000; // 1 second delay
 
-  watcher.onDidChange(() => {
-    schemaExplorer.treeDataProvider.refresh();
+  const createWatchers = () => {
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+    if (!workspaceFolders || workspaceFolders.length === 0) {
+      return [];
+    }
+
+    return workspaceFolders.map((folder) =>
+      vscode.workspace.createFileSystemWatcher(
+        new vscode.RelativePattern(folder.uri.path, "**/db/*schema.rb")
+      )
+    );
+  };
+
+  const debouncedRefresh = () => {
+    if (refreshTimeout) {
+      clearTimeout(refreshTimeout);
+    }
+
+    refreshTimeout = setTimeout(() => {
+      schemaExplorer.treeDataProvider.refresh();
+      refreshTimeout = undefined;
+    }, DEBOUNCE_DELAY);
+  };
+
+  const watchers = createWatchers();
+
+  watchers.forEach((watcher) => {
+    watcher.onDidChange(debouncedRefresh);
+    watcher.onDidCreate(debouncedRefresh);
+    watcher.onDidDelete(debouncedRefresh);
+    context.subscriptions.push(watcher);
   });
 
   let disposable = vscode.commands.registerCommand("rails-db-schema.showRailsDbSchema", () =>
