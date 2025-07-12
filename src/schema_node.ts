@@ -10,6 +10,7 @@ interface SchemaNode {
   isPrimaryKey?: boolean;
   children: SchemaNode[];
   parent: SchemaNode | undefined;
+  tableName?: string; // Nome da tabela para colunas
 }
 
 export default SchemaNode;

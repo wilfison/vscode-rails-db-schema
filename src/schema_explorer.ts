@@ -168,6 +168,38 @@ class SchemaExplorer {
     }
   }
 
+  public async copyColumnReference(node: SchemaNode): Promise<void> {
+    let tableName: string;
+    let fieldName: string = `.${node.label}`;
+
+    // Usa o tableName se disponível, senão tenta usar o parent
+    if (node.tableName) {
+      tableName = node.tableName;
+    } else if (node.parent && node.parent.isTable) {
+      tableName = node.parent.label;
+    } else {
+      // Fallback: procura a tabela que contém esta coluna
+      const allTables = this.currentSchemaModel.data;
+      tableName = "unknown_table";
+
+      for (const table of allTables) {
+        if (table.children.some((child) => child.label === node.label)) {
+          tableName = table.label;
+          break;
+        }
+      }
+
+      if (tableName === "unknown_table") {
+        fieldName = node.label;
+        return;
+      }
+    }
+
+    const reference = `${tableName}${fieldName}`;
+    await vscode.env.clipboard.writeText(reference);
+    vscode.window.showInformationMessage(`Copied: ${reference}`);
+  }
+
   private updateViewTitle(): void {
     let title = "";
 

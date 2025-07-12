@@ -54,22 +54,33 @@ export default class SchemaModel {
       const commentsInfo = tableDefinitionMatch
         ? tableDefinitionMatch[0].match(commentsInfoRegex)
         : "";
-      const children = this.getTableFields(tableText);
       const label = tableLableMatch ? tableLableMatch[0] : "";
       const tooltip = commentsInfo ? `${commentsInfo[0]}"` : "";
-      return {
+
+      // Cria o nó da tabela
+      const tableNode: SchemaNode = {
         label: label,
         type: null,
         tooltip: tooltip,
         isTable: true,
-        children: children,
+        children: [],
         parent: undefined,
         schemaUri: this.uri,
       };
+
+      // Cria os nós filhos (colunas) e define o parent e tableName
+      const children = this.getTableFields(tableText, tableNode, label);
+      tableNode.children = children;
+
+      return tableNode;
     });
   }
 
-  private getTableFields(tableText: string): SchemaNode[] {
+  private getTableFields(
+    tableText: string,
+    parentTable?: SchemaNode,
+    tableName?: string
+  ): SchemaNode[] {
     const fieldsRegex =
       /(?= t\.(?!index))([\s\S]*?)(?=\n)|(primary_key:[\s\S]*?)\sdo\s\|t\|(?=\n)/g;
     const fieldLabelRegex = /(?<=")([\s\S]*?)(?=("))/g;
@@ -98,7 +109,8 @@ export default class SchemaModel {
         isTable: false,
         isPrimaryKey: isPrimaryKey,
         children: [],
-        parent: undefined,
+        parent: parentTable,
+        tableName: tableName,
       };
     });
   }
