@@ -13,8 +13,8 @@ export async function getSchemaUris(): Promise<vscode.Uri[]> {
   return schemaFiles.reverse();
 }
 
-export function getCurrentTableName(): string | null {
-  // const pluralize = require("pluralize");
+export async function getCurrentTableName(): Promise<string | null> {
+  const pluralize = await import("pluralize-esm");
   const modelPathRegex = /(?<=models\/)([\s\S]*?)(?=(.rb))/g;
 
   const currentDocumentPath = vscode.window.activeTextEditor?.document?.fileName;
@@ -22,8 +22,7 @@ export function getCurrentTableName(): string | null {
   const modelPath = modelPathMatch ? modelPathMatch[0] : null;
   const modelName = modelPath?.replace("/", "_");
 
-  // return modelName ? pluralize(modelName) : null;
-  return modelName || null;
+  return modelName ? pluralize.default(modelName) : null;
 }
 
 export function lookForCustomTableName(callback: Function): void {
@@ -46,4 +45,17 @@ export function lookForCustomTableName(callback: Function): void {
     const customTableText = customTableMatch[0].trim().replace(/'|"/g, "");
     callback(customTableText);
   });
+}
+
+export function currentDocumentIsModel(): boolean {
+  const currentDocument = vscode.window.activeTextEditor?.document;
+  if (!currentDocument) {
+    return false;
+  }
+
+  // Check if the current document is a Ruby file and matches the model file pattern
+  return (
+    currentDocument.languageId === "ruby" &&
+    currentDocument.fileName.match(/models\/.*\.rb$/) !== null
+  );
 }

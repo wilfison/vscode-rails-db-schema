@@ -143,5 +143,8 @@
     "@vscode/test-electron": "^2.5.2",
     "eslint": "^9.25.1",
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "pluralize-esm": "^9.0.5"
   }
 }

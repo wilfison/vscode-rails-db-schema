@@ -4,7 +4,12 @@ import SchemaNode from "./schema_node";
 import SchemaModel from "./schema_model";
 import SchemaTreeDataProvider from "./schema_tree_data_provider";
 
-import { getCurrentTableName, getSchemaUris, lookForCustomTableName } from "./file_utils";
+import {
+  currentDocumentIsModel,
+  getCurrentTableName,
+  getSchemaUris,
+  lookForCustomTableName,
+} from "./file_utils";
 
 class SchemaExplorer {
   public treeDataProvider: SchemaTreeDataProvider;
@@ -48,33 +53,43 @@ class SchemaExplorer {
   public async reveal(): Promise<void> {
     await this.currentSchemaModel.refreshSchema();
 
-    const currentTable = getCurrentTableName();
-    let node = this.getNode(currentTable);
-    if (node) {
-      this.schemaViewer.reveal(node, {
-        expand: true,
+    console.log("is a model file:", currentDocumentIsModel());
+
+    // check if current document is a model file
+    if (!currentDocumentIsModel()) {
+      const schemaNodes = this.currentSchemaModel.data;
+      this.schemaViewer.reveal(schemaNodes[0], {
+        expand: false,
         select: true,
         focus: true,
       });
-    } else {
-      lookForCustomTableName((customTableName: string | null) => {
-        node = this.getNode(customTableName);
-        if (node) {
-          this.schemaViewer.reveal(node, {
-            expand: true,
-            select: true,
-            focus: true,
-          });
-        } else {
-          const schemaNodes = this.currentSchemaModel.data;
-          this.schemaViewer.reveal(schemaNodes[0], {
-            expand: false,
-            select: true,
-            focus: true,
-          });
-        }
-      });
+
+      return;
     }
+
+    console.log("Is a model file, looking for current table...");
+
+    const currentTable = await getCurrentTableName();
+    console.log("Current table name:", currentTable);
+    let node = this.getNode(currentTable);
+
+    if (node) {
+      this.schemaViewer.reveal(node, { expand: true, select: true, focus: true });
+      return;
+    }
+
+    // If no node found, look for custom table name
+    lookForCustomTableName((customTableName: string | null) => {
+      node = this.getNode(customTableName);
+
+      if (node) {
+        this.schemaViewer.reveal(node, {
+          expand: true,
+          select: true,
+          focus: true,
+        });
+      }
+    });
   }
 
   private async createSchemaModels(): Promise<SchemaModel[]> {
