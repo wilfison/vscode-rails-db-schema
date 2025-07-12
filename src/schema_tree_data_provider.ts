@@ -20,12 +20,33 @@ export default class SchemaTreeDataProvider implements vscode.TreeDataProvider<S
 
   constructor(public model: SchemaModel) {}
 
+  public get currentSearchTerm(): string {
+    return this.searchTerm;
+  }
+
+  public get isFiltered(): boolean {
+    return this.searchTerm.length > 0;
+  }
+
   public refresh(): any {
     this.model.refreshSchema();
     this._onDidChangeTreeData.fire();
   }
 
   public getTreeItem(element: SchemaNode): vscode.TreeItem {
+    if (element.label.includes("result(s) for") || element.label.includes("No results for")) {
+      return {
+        label: element.label,
+        description: element.description,
+        tooltip: element.tooltip,
+        contextValue: "searchInfo",
+        collapsibleState: vscode.TreeItemCollapsibleState.None,
+        iconPath: element.label.includes("No results")
+          ? new vscode.ThemeIcon("warning", new vscode.ThemeColor("list.warningForeground"))
+          : new vscode.ThemeIcon("search", new vscode.ThemeColor("list.highlightForeground")),
+      };
+    }
+
     return {
       label: element.type ? `${element.label} (${element.type})` : element.label,
       description: element.description,
@@ -42,7 +63,13 @@ export default class SchemaTreeDataProvider implements vscode.TreeDataProvider<S
     }
 
     if (this.searchTerm) {
-      return this.getFilteredTables();
+      const filteredTables = this.getFilteredTables();
+
+      if (filteredTables.length === 0) {
+        return [this.createNoResultsNode()];
+      }
+
+      return [this.createSearchSummaryNode(filteredTables.length), ...filteredTables];
     }
 
     return this.model.data;
@@ -80,5 +107,33 @@ export default class SchemaTreeDataProvider implements vscode.TreeDataProvider<S
     } else {
       return ICONS.field;
     }
+  }
+
+  private createSearchSummaryNode(resultCount: number): SchemaNode {
+    return {
+      label: `${resultCount} result(s) for "${this.searchTerm}"`,
+      type: null,
+      description: "",
+      tooltip: `${resultCount} tables match the search term "${this.searchTerm}"`,
+      isTable: false,
+      isPrimaryKey: false,
+      children: [],
+      parent: undefined,
+      schemaUri: undefined,
+    };
+  }
+
+  private createNoResultsNode(): SchemaNode {
+    return {
+      label: `No results for "${this.searchTerm}"`,
+      type: null,
+      description: "",
+      tooltip: `No tables or columns match the search term "${this.searchTerm}"`,
+      isTable: false,
+      isPrimaryKey: false,
+      children: [],
+      parent: undefined,
+      schemaUri: undefined,
+    };
   }
 }

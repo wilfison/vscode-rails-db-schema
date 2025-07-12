@@ -22,6 +22,8 @@ class SchemaExplorer {
     this.schemaViewer = vscode.window.createTreeView("RailsDbSchema", {
       treeDataProvider: this.treeDataProvider,
     });
+
+    this.updateViewTitle();
   }
 
   public async initialize(): Promise<void> {
@@ -112,11 +114,21 @@ class SchemaExplorer {
 
     if (searchTerm !== undefined) {
       this.treeDataProvider.setSearchTerm(searchTerm);
+      this.updateViewTitle();
     }
   }
 
   public clearSearch(): void {
     this.treeDataProvider.clearSearch();
+    this.updateViewTitle();
+  }
+
+  private updateViewTitle(): void {
+    if (this.treeDataProvider.isFiltered) {
+      this.schemaViewer.title = `(Filtered: "${this.treeDataProvider.currentSearchTerm}")`;
+    } else {
+      this.schemaViewer.title = "";
+    }
   }
 }
 
