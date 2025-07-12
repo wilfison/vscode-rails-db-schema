@@ -9,3 +9,10 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 **/.vscode-test.*
+.nyc_output
+.github/**
+.yarn/**
+yarn.lock
+package-lock.json
+node_modules/**
+*.vsix

@@ -1,71 +1,90 @@
-# rails-db-schema README
+# Rails DB Schema Explorer
 
-This is the README for your extension "rails-db-schema". After writing up a brief description, we recommend including the following sections.
+A Visual Studio Code extension that provides an intuitive way to explore and navigate Rails database schema files. This extension adds a dedicated view in the sidebar to display your Rails application's database tables and their structure, making it easier to understand and work with your database schema.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- **Schema Tree View**: Display all database tables from your Rails schema file in a convenient tree structure
+- **Real-time Updates**: Automatically refresh the schema view when your schema files change
+- **Quick Navigation**: Jump directly to table definitions in your schema file
+- **Search Functionality**: Find tables quickly with the built-in search feature
+- **Multi-workspace Support**: Works with multiple Rails projects open simultaneously
 
-For example if there is an image subfolder under your extension project workspace:
+![Rails DB Schema Explorer](resources/icon.png)
 
-\!\[feature X\]\(images/feature-x.png\)
+## Getting Started
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+1. Open a Rails project in VS Code
+2. The extension will automatically detect your `db/schema.rb` file
+3. Click on the Rails DB Schema icon in the activity bar to view your database tables
+4. Use the search functionality to quickly find specific tables
+5. Click on any table to navigate to its definition in the schema file
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- A Rails application with a `db/schema.rb` file
+- Visual Studio Code version 1.101.0 or higher
 
-## Extension Settings
+## Commands
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+This extension contributes the following commands:
 
-For example:
+- `rails-db-schema.showRailsDbSchema`: Show the Rails DB Schema view
+- `rails-db-schema.searchTables`: Search for tables in the schema
+- `rails-db-schema.clearSearch`: Clear the current search
+- `rails-db-schema.openInSchema`: Open table definition in schema file
 
-This extension contributes the following settings:
+## Keyboard Shortcuts
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+- `Ctrl+F` (when focused on the schema view): Search for tables
 
-## Known Issues
+## Usage
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+### Viewing Database Tables
+
+Once installed, the extension will automatically scan your Rails project for schema files. The database tables will appear in the Rails DB Schema view in the sidebar.
+
+### Searching Tables
+
+Use the search icon in the view title or press `Ctrl+F` when the view is focused to search for specific tables.
+
+### Navigating to Schema Definitions
+
+Click on any table in the tree view to jump directly to its definition in the `schema.rb` file.
+
+## Configuration
+
+This extension works out of the box with standard Rails applications. It automatically detects schema files matching the pattern `**/db/*schema.rb`.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## Issues
+
+If you encounter any issues or have feature requests, please file them on the [GitHub Issues page](https://github.com/wilfison/vscode-rails-db-schema/issues).
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
-
 ### 1.0.0
 
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+- Initial release
+- Schema tree view for Rails database tables
+- Real-time schema file watching
+- Search functionality for tables
+- Quick navigation to table definitions
+- Multi-workspace support
 
 ---
 
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+**Enjoy exploring your Rails database schema!**

@@ -1,14 +1,34 @@
 {
   "name": "rails-db-schema",
-  "displayName": "Rails DB Schema",
-  "description": "",
-  "version": "0.0.1",
+  "displayName": "Rails DB Schema Explorer",
+  "description": "A Visual Studio Code extension to explore and navigate Rails database schema files with ease",
+  "version": "1.0.0",
+  "publisher": "wilfison",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wilfison/vscode-rails-db-schema.git"
+  },
+  "homepage": "https://github.com/wilfison/vscode-rails-db-schema",
+  "bugs": {
+    "url": "https://github.com/wilfison/vscode-rails-db-schema/issues"
+  },
+  "keywords": [
+    "rails",
+    "ruby",
+    "database",
+    "schema",
+    "activerecord",
+    "explorer",
+    "navigation"
+  ],
+  "license": "MIT",
   "engines": {
     "vscode": "^1.101.0"
   },
   "categories": [
     "Other"
   ],
+  "icon": "resources/icon.png",
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
@@ -89,14 +109,14 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.101.0",
     "@types/mocha": "^10.0.10",
     "@types/node": "20.x",
+    "@types/vscode": "^1.101.0",
     "@typescript-eslint/eslint-plugin": "^8.31.1",
     "@typescript-eslint/parser": "^8.31.1",
-    "eslint": "^9.25.1",
-    "typescript": "^5.8.3",
     "@vscode/test-cli": "^0.0.11",
-    "@vscode/test-electron": "^2.5.2"
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.25.1",
+    "typescript": "^5.8.3"
   }
 }
