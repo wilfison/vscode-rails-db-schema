@@ -70,6 +70,12 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
+  context.subscriptions.push(
+    vscode.commands.registerCommand("rails-db-schema.selectSchema", () => {
+      schemaExplorer.selectSchema();
+    })
+  );
+
   context.subscriptions.push(disposable);
 }
 

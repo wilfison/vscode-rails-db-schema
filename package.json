@@ -44,14 +44,19 @@
     "menus": {
       "view/title": [
         {
+          "command": "rails-db-schema.selectSchema",
+          "when": "view == RailsDbSchema && rails-db-schema.hasMultipleSchemas",
+          "group": "navigation@1"
+        },
+        {
           "command": "rails-db-schema.searchTables",
           "when": "view == RailsDbSchema",
-          "group": "navigation"
+          "group": "navigation@2"
         },
         {
           "command": "rails-db-schema.clearSearch",
           "when": "view == RailsDbSchema",
-          "group": "navigation"
+          "group": "navigation@3"
         }
       ],
       "view/item/context": [
@@ -71,6 +76,11 @@
         "command": "rails-db-schema.openInSchema",
         "title": "Open in schema",
         "icon": "$(go-to-file)"
+      },
+      {
+        "command": "rails-db-schema.selectSchema",
+        "title": "Select Schema",
+        "icon": "$(database)"
       },
       {
         "command": "rails-db-schema.searchTables",

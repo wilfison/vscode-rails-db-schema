@@ -29,9 +29,19 @@ class SchemaExplorer {
   public async initialize(): Promise<void> {
     this.schemaModels = await this.createSchemaModels();
 
-    this.currentSchemaModel = this.schemaModels[0];
-    this.treeDataProvider.model = this.currentSchemaModel;
+    if (this.schemaModels.length > 0) {
+      this.currentSchemaModel = this.schemaModels[0];
+      this.treeDataProvider.model = this.currentSchemaModel;
+    }
 
+    // Define se há múltiplos esquemas para controlar UI
+    await vscode.commands.executeCommand(
+      "setContext",
+      "rails-db-schema.hasMultipleSchemas",
+      this.schemaModels.length > 1
+    );
+
+    this.updateViewTitle();
     this.reveal();
   }
 
@@ -123,12 +133,57 @@ class SchemaExplorer {
     this.updateViewTitle();
   }
 
-  private updateViewTitle(): void {
-    if (this.treeDataProvider.isFiltered) {
-      this.schemaViewer.title = `(Filtered: "${this.treeDataProvider.currentSearchTerm}")`;
-    } else {
-      this.schemaViewer.title = "";
+  public async selectSchema(): Promise<void> {
+    if (this.schemaModels.length <= 1) {
+      vscode.window.showInformationMessage("Only one schema file found.");
+      return;
     }
+
+    const schemaOptions = this.schemaModels.map((model, index) => {
+      const fileName = model.uri.path.split("/").pop() || "Unknown";
+      const isActive = model === this.currentSchemaModel ? " ✓" : "";
+      const relativePath = vscode.workspace.asRelativePath(model.uri);
+      return {
+        label: `${fileName}${isActive}`,
+        description: relativePath,
+        detail: isActive ? "Currently active schema" : undefined,
+        index: index,
+        model: model,
+      };
+    });
+
+    const selectedOption = await vscode.window.showQuickPick(schemaOptions, {
+      placeHolder: "Select a schema file to work with",
+      matchOnDescription: true,
+      ignoreFocusOut: true,
+    });
+
+    if (selectedOption && selectedOption.model !== this.currentSchemaModel) {
+      this.currentSchemaModel = selectedOption.model;
+      this.treeDataProvider.model = this.currentSchemaModel;
+      this.treeDataProvider.refresh();
+      this.updateViewTitle();
+
+      this.reveal();
+    }
+  }
+
+  private updateViewTitle(): void {
+    let title = "";
+
+    // Mostra o nome do schema atual se há múltiplos schemas
+    if (this.schemaModels.length > 1) {
+      const schemaName = this.currentSchemaModel.uri.path.split("/").pop() || "schema.rb";
+      title = `${schemaName}`;
+    }
+
+    // Adiciona informação de filtro se estiver filtrado
+    if (this.treeDataProvider.isFiltered) {
+      const filterInfo = `(Filtered: "${this.treeDataProvider.currentSearchTerm}")`;
+      title = title ? `${title} ${filterInfo}` : filterInfo;
+    }
+
+    this.schemaViewer.title = title;
   }
 }
 

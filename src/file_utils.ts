@@ -7,9 +7,9 @@ export async function getSchemaUris(): Promise<vscode.Uri[]> {
     return [];
   }
 
-  const schemaFiles = vscode.workspace.findFiles("**/db/*schema.rb", "**/node_modules/**");
+  const schemaFiles = await vscode.workspace.findFiles("**/db/*schema.rb", "**/node_modules/**");
 
-  return schemaFiles;
+  return schemaFiles.reverse();
 }
 
 export function getCurrentTableName(): string | null {
