@@ -53,12 +53,9 @@ class SchemaExplorer {
   public async reveal(): Promise<void> {
     await this.currentSchemaModel.refreshSchema();
 
-    console.log("is a model file:", currentDocumentIsModel());
-
     // check if current document is a model file
     if (!currentDocumentIsModel()) {
-      const schemaNodes = this.currentSchemaModel.data;
-      this.schemaViewer.reveal(schemaNodes[0], {
+      this.schemaViewer.reveal(this.currentSchemaModel.data[0], {
         expand: false,
         select: true,
         focus: true,
@@ -67,28 +64,19 @@ class SchemaExplorer {
       return;
     }
 
-    console.log("Is a model file, looking for current table...");
-
-    const currentTable = await getCurrentTableName();
-    console.log("Current table name:", currentTable);
-    let node = this.getNode(currentTable);
+    let currentTables = await Promise.all([getCurrentTableName(), lookForCustomTableName()]);
+    console.log("Current tables:", currentTables);
+    let node = this.getNode(currentTables);
 
     if (node) {
       this.schemaViewer.reveal(node, { expand: true, select: true, focus: true });
       return;
     }
 
-    // If no node found, look for custom table name
-    lookForCustomTableName((customTableName: string | null) => {
-      node = this.getNode(customTableName);
-
-      if (node) {
-        this.schemaViewer.reveal(node, {
-          expand: true,
-          select: true,
-          focus: true,
-        });
-      }
+    this.schemaViewer.reveal(this.currentSchemaModel.data[0], {
+      expand: false,
+      select: true,
+      focus: true,
     });
   }
 
@@ -117,7 +105,13 @@ class SchemaExplorer {
     editor.revealRange(editor.selection, vscode.TextEditorRevealType.InCenter);
   }
 
-  private getNode(label: string | null): SchemaNode | undefined {
+  private getNode(labels: (string | null)[]): SchemaNode | undefined {
+    const validLabels = labels.filter(Boolean) as string[];
+
+    if (validLabels.length === 0) {
+      return undefined;
+    }
+
     const schemaNodes = this.currentSchemaModel.data;
 
     if (schemaNodes.length === 0) {
@@ -125,7 +119,7 @@ class SchemaExplorer {
     }
 
     return schemaNodes.find((node) => {
-      if (node.label === label) {
+      if (validLabels.includes(node.label)) {
         return node;
       }
     });

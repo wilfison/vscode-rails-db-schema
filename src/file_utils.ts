@@ -25,26 +25,23 @@ export async function getCurrentTableName(): Promise<string | null> {
   return modelName ? pluralize.default(modelName) : null;
 }
 
-export function lookForCustomTableName(callback: Function): void {
-  const currentDocumentUri = vscode.window.activeTextEditor?.document?.uri;
-  if (currentDocumentUri === undefined) {
-    callback(null);
-    return;
+export async function lookForCustomTableName(): Promise<string | null> {
+  const document = vscode.window.activeTextEditor?.document;
+
+  if (!document) {
+    return null;
   }
 
-  vscode.workspace.openTextDocument(currentDocumentUri).then((document) => {
-    const documentText = document.getText();
-    const customTableRegex = /(?<=self\.table_name =)([\s\S]*?)\n/g;
+  const documentText = document.getText();
+  const customTableRegex = /(?<=\.table_name\s*=)([\s\S]*?)\n/g;
 
-    const customTableMatch = documentText.match(customTableRegex);
-    if (customTableMatch === null || customTableMatch.length === 0) {
-      callback(null);
-      return;
-    }
+  const customTableMatch = documentText.match(customTableRegex);
+  if (customTableMatch === null || customTableMatch.length === 0) {
+    return null;
+  }
 
-    const customTableText = customTableMatch[0].trim().replace(/'|"/g, "");
-    callback(customTableText);
-  });
+  const customTableText = customTableMatch[0].trim().replace(/'|"/g, "");
+  return customTableText || null;
 }
 
 export function currentDocumentIsModel(): boolean {
