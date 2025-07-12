@@ -33,6 +33,18 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
+  context.subscriptions.push(
+    vscode.commands.registerCommand("rails-db-schema.searchTables", () => {
+      schemaExplorer.searchTables();
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("rails-db-schema.clearSearch", () => {
+      schemaExplorer.clearSearch();
+    })
+  );
+
   context.subscriptions.push(disposable);
 }
 

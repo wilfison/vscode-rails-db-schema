@@ -103,6 +103,21 @@ class SchemaExplorer {
       }
     });
   }
+
+  public async searchTables(): Promise<void> {
+    const searchTerm = await vscode.window.showInputBox({
+      prompt: "Enter search term for table or column names",
+      placeHolder: "Search tables and columns...",
+    });
+
+    if (searchTerm !== undefined) {
+      this.treeDataProvider.setSearchTerm(searchTerm);
+    }
+  }
+
+  public clearSearch(): void {
+    this.treeDataProvider.clearSearch();
+  }
 }
 
 export default SchemaExplorer;

@@ -24,6 +24,18 @@
       ]
     },
     "menus": {
+      "view/title": [
+        {
+          "command": "rails-db-schema.searchTables",
+          "when": "view == RailsDbSchema",
+          "group": "navigation"
+        },
+        {
+          "command": "rails-db-schema.clearSearch",
+          "when": "view == RailsDbSchema",
+          "group": "navigation"
+        }
+      ],
       "view/item/context": [
         {
           "command": "rails-db-schema.openInSchema",
@@ -41,6 +53,16 @@
         "command": "rails-db-schema.openInSchema",
         "title": "Open in schema",
         "icon": "$(go-to-file)"
+      },
+      {
+        "command": "rails-db-schema.searchTables",
+        "title": "Search Tables",
+        "icon": "$(search)"
+      },
+      {
+        "command": "rails-db-schema.clearSearch",
+        "title": "Clear Search",
+        "icon": "$(clear-all)"
       }
     ],
     "views": {
