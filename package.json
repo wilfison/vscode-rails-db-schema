@@ -71,7 +71,14 @@
           "icon": "resources/activity-icon.svg"
         }
       ]
-    }
+    },
+    "keybindings": [
+      {
+        "command": "rails-db-schema.searchTables",
+        "key": "ctrl+f",
+        "when": "focusedView == RailsDbSchema"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
