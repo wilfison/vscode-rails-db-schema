@@ -55,7 +55,7 @@
         },
         {
           "command": "rails-db-schema.clearSearch",
-          "when": "view == RailsDbSchema",
+          "when": "view == RailsDbSchema && rails-db-schema.hasActiveSearch",
           "group": "navigation@3"
         }
       ],
