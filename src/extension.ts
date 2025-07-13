@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 
 import SchemaExplorer from "./schema_explorer";
 import SchemaNode from "./schema_node";
+import { currentDocumentIsModel } from "./file_utils";
 
 export function activate(context: vscode.ExtensionContext) {
   const schemaExplorer = new SchemaExplorer();
@@ -42,6 +43,26 @@ export function activate(context: vscode.ExtensionContext) {
     watcher.onDidDelete(debouncedRefresh);
     context.subscriptions.push(watcher);
   });
+
+  let revealTimeout: NodeJS.Timeout | undefined;
+  const REVEAL_DEBOUNCE_DELAY = 300;
+
+  const onDidChangeActiveEditor = vscode.window.onDidChangeActiveTextEditor(async (editor) => {
+    if (revealTimeout) {
+      clearTimeout(revealTimeout);
+    }
+
+    revealTimeout = setTimeout(async () => {
+      if (editor && editor.document) {
+        if (currentDocumentIsModel() && schemaExplorer.isViewVisible()) {
+          await schemaExplorer.revealTables();
+        }
+      }
+      revealTimeout = undefined;
+    }, REVEAL_DEBOUNCE_DELAY);
+  });
+
+  context.subscriptions.push(onDidChangeActiveEditor);
 
   let disposable = vscode.commands.registerCommand("rails-db-schema.showRailsDbSchema", () =>
     schemaExplorer.reveal()

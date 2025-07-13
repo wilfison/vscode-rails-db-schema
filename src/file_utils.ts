@@ -1,5 +1,13 @@
 import * as vscode from "vscode";
 
+export function currentDocument(): vscode.TextDocument | undefined {
+  return vscode.window.activeTextEditor?.document;
+}
+
+export function currentDocumentName(): string | undefined {
+  return currentDocument()?.uri.fsPath.match(/([^\/]+).rb$/)?.[1];
+}
+
 export async function getSchemaUris(): Promise<vscode.Uri[]> {
   const workspaceFolders = vscode.workspace.workspaceFolders;
 
@@ -17,7 +25,7 @@ export async function getCurrentTableName(): Promise<string | null> {
   const pluralize = await import("pluralize-esm");
   const modelPathRegex = /(?<=models\/)([\s\S]*?)(?=(.rb))/g;
 
-  const currentDocumentPath = vscode.window.activeTextEditor?.document?.fileName;
+  const currentDocumentPath = currentDocument()?.fileName;
   const modelPathMatch = currentDocumentPath?.match(modelPathRegex);
   const modelPath = modelPathMatch ? modelPathMatch[0] : null;
   const modelName = modelPath?.replace("/", "_");
@@ -26,7 +34,7 @@ export async function getCurrentTableName(): Promise<string | null> {
 }
 
 export async function lookForCustomTableName(): Promise<string | null> {
-  const document = vscode.window.activeTextEditor?.document;
+  const document = currentDocument();
 
   if (!document) {
     return null;
@@ -45,14 +53,11 @@ export async function lookForCustomTableName(): Promise<string | null> {
 }
 
 export function currentDocumentIsModel(): boolean {
-  const currentDocument = vscode.window.activeTextEditor?.document;
-  if (!currentDocument) {
+  const document = currentDocument();
+  if (!document) {
     return false;
   }
 
   // Check if the current document is a Ruby file and matches the model file pattern
-  return (
-    currentDocument.languageId === "ruby" &&
-    currentDocument.fileName.match(/models\/.*\.rb$/) !== null
-  );
+  return document.languageId === "ruby" && document.fileName.match(/models\/.*\.rb$/) !== null;
 }

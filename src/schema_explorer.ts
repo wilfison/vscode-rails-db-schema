@@ -6,6 +6,7 @@ import SchemaTreeDataProvider from "./schema_tree_data_provider";
 
 import {
   currentDocumentIsModel,
+  currentDocumentName,
   getCurrentTableName,
   getSchemaUris,
   lookForCustomTableName,
@@ -39,7 +40,6 @@ class SchemaExplorer {
       this.treeDataProvider.model = this.currentSchemaModel;
     }
 
-    // Define se há múltiplos esquemas para controlar UI
     await vscode.commands.executeCommand(
       "setContext",
       "rails-db-schema.hasMultipleSchemas",
@@ -52,32 +52,7 @@ class SchemaExplorer {
 
   public async reveal(): Promise<void> {
     await this.currentSchemaModel.refreshSchema();
-
-    // check if current document is a model file
-    if (!currentDocumentIsModel()) {
-      this.schemaViewer.reveal(this.currentSchemaModel.data[0], {
-        expand: false,
-        select: true,
-        focus: true,
-      });
-
-      return;
-    }
-
-    let currentTables = await Promise.all([getCurrentTableName(), lookForCustomTableName()]);
-    console.log("Current tables:", currentTables);
-    let node = this.getNode(currentTables);
-
-    if (node) {
-      this.schemaViewer.reveal(node, { expand: true, select: true, focus: true });
-      return;
-    }
-
-    this.schemaViewer.reveal(this.currentSchemaModel.data[0], {
-      expand: false,
-      select: true,
-      focus: true,
-    });
+    await this.revealTables();
   }
 
   private async createSchemaModels(): Promise<SchemaModel[]> {
@@ -105,7 +80,7 @@ class SchemaExplorer {
     editor.revealRange(editor.selection, vscode.TextEditorRevealType.InCenter);
   }
 
-  private getNode(labels: (string | null)[]): SchemaNode | undefined {
+  private getNode(labels: string[]): SchemaNode | undefined {
     const validLabels = labels.filter(Boolean) as string[];
 
     if (validLabels.length === 0) {
@@ -181,13 +156,11 @@ class SchemaExplorer {
     let tableName: string;
     let fieldName: string = `.${node.label}`;
 
-    // Usa o tableName se disponível, senão tenta usar o parent
     if (node.tableName) {
       tableName = node.tableName;
     } else if (node.parent && node.parent.isTable) {
       tableName = node.parent.label;
     } else {
-      // Fallback: procura a tabela que contém esta coluna
       const allTables = this.currentSchemaModel.data;
       tableName = "unknown_table";
 
@@ -212,19 +185,49 @@ class SchemaExplorer {
   private updateViewTitle(): void {
     let title = "";
 
-    // Mostra o nome do schema atual se há múltiplos schemas
     if (this.schemaModels.length > 1) {
       const schemaName = this.currentSchemaModel.uri.path.split("/").pop() || "schema.rb";
       title = `${schemaName}`;
     }
 
-    // Adiciona informação de filtro se estiver filtrado
     if (this.treeDataProvider.isFiltered) {
       const filterInfo = `(Filtered: "${this.treeDataProvider.currentSearchTerm}")`;
       title = title ? `${title} ${filterInfo}` : filterInfo;
     }
 
     this.schemaViewer.title = title;
+  }
+
+  public isViewVisible(): boolean {
+    return this.schemaViewer.visible;
+  }
+
+  public async revealTables(): Promise<void> {
+    // check if current document is a model file
+    if (!currentDocumentIsModel()) {
+      this.schemaViewer.reveal(this.currentSchemaModel.data[0], {
+        expand: false,
+        select: true,
+        focus: true,
+      });
+
+      return;
+    }
+
+    let currentTables = await Promise.all([getCurrentTableName(), lookForCustomTableName()]);
+    let possibleNames = [currentDocumentName(), ...currentTables].filter(Boolean) as string[];
+    let node = this.getNode(possibleNames);
+
+    if (node) {
+      this.schemaViewer.reveal(node, { expand: true, select: true, focus: true });
+      return;
+    }
+
+    this.schemaViewer.reveal(this.currentSchemaModel.data[0], {
+      expand: false,
+      select: true,
+      focus: true,
+    });
   }
 }
 
