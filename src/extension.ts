@@ -3,13 +3,11 @@ import * as vscode from "vscode";
 import SchemaExplorer from "./schema_explorer";
 import SchemaNode from "./schema_node";
 import { currentDocumentIsModel } from "./file_utils";
+import { debaunce } from "./utils/debaunce";
 
 export function activate(context: vscode.ExtensionContext) {
   const schemaExplorer = new SchemaExplorer();
   schemaExplorer.initialize();
-
-  let refreshTimeout: NodeJS.Timeout | undefined;
-  const DEBOUNCE_DELAY = 1000; // 1 second delay
 
   const createWatchers = () => {
     const workspaceFolders = vscode.workspace.workspaceFolders;
@@ -24,16 +22,9 @@ export function activate(context: vscode.ExtensionContext) {
     );
   };
 
-  const debouncedRefresh = () => {
-    if (refreshTimeout) {
-      clearTimeout(refreshTimeout);
-    }
-
-    refreshTimeout = setTimeout(() => {
-      schemaExplorer.treeDataProvider.refresh();
-      refreshTimeout = undefined;
-    }, DEBOUNCE_DELAY);
-  };
+  const debouncedRefresh = debaunce(() => {
+    schemaExplorer.treeDataProvider.refresh();
+  }, 1000);
 
   const watchers = createWatchers();
 
@@ -44,24 +35,14 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(watcher);
   });
 
-  let revealTimeout: NodeJS.Timeout | undefined;
-  const REVEAL_DEBOUNCE_DELAY = 300;
-
-  const onDidChangeActiveEditor = vscode.window.onDidChangeActiveTextEditor(async (editor) => {
-    if (revealTimeout) {
-      clearTimeout(revealTimeout);
+  // Automatically reveal model table when the active editor changes
+  const debaunceModel = debaunce(async (editor) => {
+    if (editor?.document && currentDocumentIsModel() && schemaExplorer.isViewVisible()) {
+      await schemaExplorer.revealTables();
     }
+  }, 300);
 
-    revealTimeout = setTimeout(async () => {
-      if (editor && editor.document) {
-        if (currentDocumentIsModel() && schemaExplorer.isViewVisible()) {
-          await schemaExplorer.revealTables();
-        }
-      }
-      revealTimeout = undefined;
-    }, REVEAL_DEBOUNCE_DELAY);
-  });
-
+  const onDidChangeActiveEditor = vscode.window.onDidChangeActiveTextEditor(debaunceModel);
   context.subscriptions.push(onDidChangeActiveEditor);
 
   let disposable = vscode.commands.registerCommand("rails-db-schema.showRailsDbSchema", () =>
