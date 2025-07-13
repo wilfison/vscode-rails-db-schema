@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 
 import SchemaExplorer from "./schema_explorer";
 import SchemaNode from "./schema_node";
-import { currentDocumentIsModel } from "./file_utils";
+import { currentDocumentIsModel } from "./utils/files";
 import { debaunce } from "./utils/debaunce";
 
 export function activate(context: vscode.ExtensionContext) {

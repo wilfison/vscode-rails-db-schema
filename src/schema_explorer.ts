@@ -10,7 +10,7 @@ import {
   getCurrentTableName,
   getSchemaUris,
   lookForCustomTableName,
-} from "./file_utils";
+} from "./utils/files";
 
 class SchemaExplorer {
   public treeDataProvider: SchemaTreeDataProvider;
