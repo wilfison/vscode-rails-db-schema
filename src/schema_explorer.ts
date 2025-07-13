@@ -27,6 +27,8 @@ class SchemaExplorer {
 
     this.schemaViewer = vscode.window.createTreeView("RailsDbSchema", {
       treeDataProvider: this.treeDataProvider,
+      showCollapseAll: true,
+      canSelectMany: false,
     });
 
     this.updateViewTitle();
