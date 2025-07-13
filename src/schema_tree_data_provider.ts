@@ -126,7 +126,7 @@ export default class SchemaTreeDataProvider implements vscode.TreeDataProvider<S
       children: [],
       parent: undefined,
       schemaUri: undefined,
-      tableName: undefined,
+      tableName: "",
     };
   }
 
@@ -141,7 +141,7 @@ export default class SchemaTreeDataProvider implements vscode.TreeDataProvider<S
       children: [],
       parent: undefined,
       schemaUri: undefined,
-      tableName: undefined,
+      tableName: "",
     };
   }
 }

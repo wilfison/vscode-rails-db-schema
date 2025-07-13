@@ -154,9 +154,9 @@ class SchemaExplorer {
     }
   }
 
-  public async copyColumnReference(node: SchemaNode): Promise<void> {
+  public async copyReference(node: SchemaNode): Promise<void> {
     let tableName: string;
-    let fieldName: string = `.${node.label}`;
+    let fieldName: string = node.isTable ? "" : `.${node.label}`;
 
     if (node.tableName) {
       tableName = node.tableName;

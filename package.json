@@ -66,14 +66,9 @@
           "group": "inline"
         },
         {
-          "command": "rails-db-schema.copyColumnReference",
-          "when": "view == RailsDbSchema && viewItem == schemaField",
+          "command": "rails-db-schema.copyReference",
+          "when": "view == RailsDbSchema && (viewItem == schemaField || viewItem == schemaTable)",
           "group": "inline"
-        },
-        {
-          "command": "rails-db-schema.copyColumnReference",
-          "when": "view == RailsDbSchema && viewItem == schemaField",
-          "group": "1_copy@1"
         }
       ]
     },
@@ -88,7 +83,7 @@
         "icon": "$(go-to-file)"
       },
       {
-        "command": "rails-db-schema.copyColumnReference",
+        "command": "rails-db-schema.copyReference",
         "title": "Copy Column Reference",
         "icon": "$(copy)"
       },

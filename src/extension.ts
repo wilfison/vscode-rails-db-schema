@@ -79,8 +79,8 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("rails-db-schema.copyColumnReference", (node: SchemaNode) => {
-      schemaExplorer.copyColumnReference(node);
+    vscode.commands.registerCommand("rails-db-schema.copyReference", (node: SchemaNode) => {
+      schemaExplorer.copyReference(node);
     })
   );
 

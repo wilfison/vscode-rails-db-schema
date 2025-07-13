@@ -65,11 +65,12 @@ export default class SchemaModel {
         isTable: true,
         children: [],
         parent: undefined,
+        tableName: label,
         schemaUri: this.uri,
       };
 
       // Cria os nós filhos (colunas) e define o parent e tableName
-      const children = this.getTableFields(tableText, tableNode, label);
+      const children = this.getTableFields(tableText, label, tableNode);
       tableNode.children = children;
 
       return tableNode;
@@ -78,8 +79,8 @@ export default class SchemaModel {
 
   private getTableFields(
     tableText: string,
-    parentTable?: SchemaNode,
-    tableName?: string
+    tableName: string,
+    parentTable?: SchemaNode
   ): SchemaNode[] {
     const fieldsRegex =
       /(?= t\.(?!index))([\s\S]*?)(?=\n)|(primary_key:[\s\S]*?)\sdo\s\|t\|(?=\n)/g;
