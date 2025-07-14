@@ -10,7 +10,7 @@ A Visual Studio Code extension that provides an intuitive way to explore and nav
 - **Search Functionality**: Find tables quickly with the built-in search feature
 - **Multi-workspace Support**: Works with multiple Rails projects open simultaneously
 
-![Rails DB Schema Explorer](resources/icon.png)
+![Rails DB Schema Explorer](https://github.com/wilfison/vscode-rails-db-schema/raw/HEAD/resources/preview.png)
 
 ## Getting Started
 
