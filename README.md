@@ -1,6 +1,8 @@
 # Rails Schema Explorer
 
-A Visual Studio Code extension that provides an intuitive way to explore and navigate Rails database schema files. This extension adds a dedicated view in the sidebar to display your Rails application's database tables and their structure, making it easier to understand and work with your database schema.
+[![VSCode Marketplace](https://img.shields.io/vscode-marketplace/v/wilfison.rails-schemas.svg?style=flat-square&label=vscode%20marketplace)](https://marketplace.visualstudio.com/items?itemName=wilfison.rails-schemas)
+
+A [Visual Studio Code extension](https://marketplace.visualstudio.com/items?itemName=wilfison.rails-schemas) that provides an intuitive way to explore and navigate Rails database schema files. This extension adds a dedicated view in the sidebar to display your Rails application's database tables and their structure, making it easier to understand and work with your database schema.
 
 ## Features
 
