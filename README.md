@@ -25,15 +25,6 @@ A Visual Studio Code extension that provides an intuitive way to explore and nav
 - A Rails application with a `db/schema.rb` file
 - Visual Studio Code version 1.101.0 or higher
 
-## Commands
-
-This extension contributes the following commands:
-
-- `rails-db-schema.showRailsDbSchema`: Show the Rails DB Schema view
-- `rails-db-schema.searchTables`: Search for tables in the schema
-- `rails-db-schema.clearSearch`: Clear the current search
-- `rails-db-schema.openInSchema`: Open table definition in schema file
-
 ## Keyboard Shortcuts
 
 - `Ctrl+F` (when focused on the schema view): Search for tables

@@ -45,12 +45,12 @@ export function activate(context: vscode.ExtensionContext) {
   const onDidChangeActiveEditor = vscode.window.onDidChangeActiveTextEditor(debaunceModel);
   context.subscriptions.push(onDidChangeActiveEditor);
 
-  let disposable = vscode.commands.registerCommand("rails-db-schema.showRailsDbSchema", () =>
+  let disposable = vscode.commands.registerCommand("rails-schemas.showRailsDbSchema", () =>
     schemaExplorer.reveal()
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("rails-db-schema.openInSchema", async (node: SchemaNode) => {
+    vscode.commands.registerCommand("rails-schemas.openInSchema", async (node: SchemaNode) => {
       if (node.schemaUri === undefined) {
         return;
       }
@@ -61,25 +61,25 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("rails-db-schema.searchTables", () => {
+    vscode.commands.registerCommand("rails-schemas.searchTables", () => {
       schemaExplorer.searchTables();
     })
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("rails-db-schema.clearSearch", () => {
+    vscode.commands.registerCommand("rails-schemas.clearSearch", () => {
       schemaExplorer.clearSearch();
     })
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("rails-db-schema.selectSchema", () => {
+    vscode.commands.registerCommand("rails-schemas.selectSchema", () => {
       schemaExplorer.selectSchema();
     })
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("rails-db-schema.copyReference", (node: SchemaNode) => {
+    vscode.commands.registerCommand("rails-schemas.copyReference", (node: SchemaNode) => {
       schemaExplorer.copyReference(node);
     })
   );

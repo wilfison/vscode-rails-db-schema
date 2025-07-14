@@ -1,5 +1,5 @@
 {
-  "name": "rails-db-schema",
+  "name": "rails-schemas",
   "displayName": "Rails DB Schema Explorer",
   "description": "A Visual Studio Code extension to explore and navigate Rails database schema files with ease",
   "version": "1.0.0",
@@ -35,7 +35,7 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "rails-db-schema",
+          "id": "rails-schemas",
           "title": "Rails Db Schema",
           "icon": "resources/activity-icon.svg"
         }
@@ -44,29 +44,29 @@
     "menus": {
       "view/title": [
         {
-          "command": "rails-db-schema.selectSchema",
-          "when": "view == RailsDbSchema && rails-db-schema.hasMultipleSchemas",
+          "command": "rails-schemas.selectSchema",
+          "when": "view == RailsDbSchema && rails-schemas.hasMultipleSchemas",
           "group": "navigation@1"
         },
         {
-          "command": "rails-db-schema.searchTables",
+          "command": "rails-schemas.searchTables",
           "when": "view == RailsDbSchema",
           "group": "navigation@2"
         },
         {
-          "command": "rails-db-schema.clearSearch",
-          "when": "view == RailsDbSchema && rails-db-schema.hasActiveSearch",
+          "command": "rails-schemas.clearSearch",
+          "when": "view == RailsDbSchema && rails-schemas.hasActiveSearch",
           "group": "navigation@3"
         }
       ],
       "view/item/context": [
         {
-          "command": "rails-db-schema.openInSchema",
+          "command": "rails-schemas.openInSchema",
           "when": "view == RailsDbSchema && viewItem == schemaTable",
           "group": "inline"
         },
         {
-          "command": "rails-db-schema.copyReference",
+          "command": "rails-schemas.copyReference",
           "when": "view == RailsDbSchema && (viewItem == schemaField || viewItem == schemaTable)",
           "group": "inline"
         }
@@ -74,37 +74,37 @@
     },
     "commands": [
       {
-        "command": "rails-db-schema.showRailsDbSchema",
+        "command": "rails-schemas.showRailsDbSchema",
         "title": "Show Rails Db Schema"
       },
       {
-        "command": "rails-db-schema.openInSchema",
+        "command": "rails-schemas.openInSchema",
         "title": "Open in schema",
         "icon": "$(go-to-file)"
       },
       {
-        "command": "rails-db-schema.copyReference",
+        "command": "rails-schemas.copyReference",
         "title": "Copy Column Reference",
         "icon": "$(copy)"
       },
       {
-        "command": "rails-db-schema.selectSchema",
+        "command": "rails-schemas.selectSchema",
         "title": "Select Schema",
         "icon": "$(database)"
       },
       {
-        "command": "rails-db-schema.searchTables",
+        "command": "rails-schemas.searchTables",
         "title": "Search Tables",
         "icon": "$(search)"
       },
       {
-        "command": "rails-db-schema.clearSearch",
+        "command": "rails-schemas.clearSearch",
         "title": "Clear Search",
         "icon": "$(clear-all)"
       }
     ],
     "views": {
-      "rails-db-schema": [
+      "rails-schemas": [
         {
           "id": "RailsDbSchema",
           "name": "Rails Db Schema",
@@ -114,7 +114,7 @@
     },
     "keybindings": [
       {
-        "command": "rails-db-schema.searchTables",
+        "command": "rails-schemas.searchTables",
         "key": "ctrl+f",
         "when": "focusedView == RailsDbSchema"
       }

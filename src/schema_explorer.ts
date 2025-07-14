@@ -44,7 +44,7 @@ class SchemaExplorer {
 
     await vscode.commands.executeCommand(
       "setContext",
-      "rails-db-schema.hasMultipleSchemas",
+      "rails-schemas.hasMultipleSchemas",
       this.schemaModels.length > 1
     );
 

@@ -79,7 +79,7 @@ export default class SchemaTreeDataProvider implements vscode.TreeDataProvider<S
     this.searchTerm = searchTerm.toLowerCase();
     vscode.commands.executeCommand(
       "setContext",
-      "rails-db-schema.hasActiveSearch",
+      "rails-schemas.hasActiveSearch",
       searchTerm.length > 0
     );
     this._onDidChangeTreeData.fire();
@@ -87,7 +87,7 @@ export default class SchemaTreeDataProvider implements vscode.TreeDataProvider<S
 
   public clearSearch(): void {
     this.searchTerm = "";
-    vscode.commands.executeCommand("setContext", "rails-db-schema.hasActiveSearch", false);
+    vscode.commands.executeCommand("setContext", "rails-schemas.hasActiveSearch", false);
     this._onDidChangeTreeData.fire();
   }
 
