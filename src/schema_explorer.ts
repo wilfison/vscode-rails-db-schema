@@ -184,6 +184,23 @@ class SchemaExplorer {
     vscode.window.showInformationMessage(`Copied: ${reference}`);
   }
 
+  public async copyColumnNames(node: SchemaNode): Promise<void> {
+    if (!node.isTable) {
+      vscode.window.showErrorMessage("This command can only be used on table nodes.");
+      return;
+    }
+
+    const columnNames = node.children
+      .filter((child) => !child.isTable)
+      .map((child) => child.label)
+      .join("\n");
+
+    if (columnNames) {
+      await vscode.env.clipboard.writeText(columnNames);
+      vscode.window.showInformationMessage("Column names copied to clipboard.");
+    }
+  }
+
   private updateViewTitle(): void {
     let title = "";
 

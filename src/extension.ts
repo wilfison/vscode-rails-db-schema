@@ -84,6 +84,12 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
+  context.subscriptions.push(
+    vscode.commands.registerCommand("rails-schemas.copyColumnNames", (node: SchemaNode) => {
+      schemaExplorer.copyColumnNames(node);
+    })
+  );
+
   context.subscriptions.push(disposable);
 }
 

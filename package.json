@@ -69,6 +69,11 @@
           "command": "rails-schemas.copyReference",
           "when": "view == RailsDbSchema && (viewItem == schemaField || viewItem == schemaTable)",
           "group": "inline"
+        },
+        {
+          "command": "rails-schemas.copyColumnNames",
+          "when": "view == RailsDbSchema && viewItem == schemaTable",
+          "group": "inline"
         }
       ]
     },
@@ -86,6 +91,11 @@
         "command": "rails-schemas.copyReference",
         "title": "Copy Column Reference",
         "icon": "$(copy)"
+      },
+      {
+        "command": "rails-schemas.copyColumnNames",
+        "title": "Copy Column Names",
+        "icon": "$(checklist)"
       },
       {
         "command": "rails-schemas.selectSchema",
