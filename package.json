@@ -2,7 +2,7 @@
   "name": "rails-schemas",
   "displayName": "Rails Schema Explorer",
   "description": "A Visual Studio Code extension to explore and navigate Rails database schema files with ease",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "publisher": "wilfison",
   "repository": {
     "type": "git",
