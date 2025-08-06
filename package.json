@@ -31,6 +31,7 @@
   "icon": "resources/icon.png",
   "activationEvents": [],
   "main": "./out/extension.js",
+  "type": "module",
   "contributes": {
     "viewsContainers": {
       "activitybar": [

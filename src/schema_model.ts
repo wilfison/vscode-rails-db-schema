@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import SchemaNode from "./schema_node";
+import SchemaNode from "./schema_node.js";
 
 export default class SchemaModel {
   public data: SchemaNode[];

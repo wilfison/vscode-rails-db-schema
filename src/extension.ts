@@ -1,9 +1,9 @@
 import * as vscode from "vscode";
 
-import SchemaExplorer from "./schema_explorer";
-import SchemaNode from "./schema_node";
-import { currentDocumentIsModel } from "./utils/files";
-import { debaunce } from "./utils/debaunce";
+import SchemaExplorer from "./schema_explorer.js";
+import SchemaNode from "./schema_node.js";
+import { currentDocumentIsModel } from "./utils/files.js";
+import { debaunce } from "./utils/debaunce.js";
 
 export function activate(context: vscode.ExtensionContext) {
   const schemaExplorer = new SchemaExplorer();

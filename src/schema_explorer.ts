@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
 
-import SchemaNode from "./schema_node";
-import SchemaModel from "./schema_model";
-import SchemaTreeDataProvider from "./schema_tree_data_provider";
+import SchemaNode from "./schema_node.js";
+import SchemaModel from "./schema_model.js";
+import SchemaTreeDataProvider from "./schema_tree_data_provider.js";
 
 import {
   currentDocumentIsModel,
@@ -10,7 +10,7 @@ import {
   getCurrentTableName,
   getSchemaUris,
   lookForCustomTableName,
-} from "./utils/files";
+} from "./utils/files.js";
 
 class SchemaExplorer {
   public treeDataProvider: SchemaTreeDataProvider;

@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 
-import SchemaModel from "./schema_model";
-import SchemaNode from "./schema_node";
+import SchemaModel from "./schema_model.js";
+import SchemaNode from "./schema_node.js";
 
 const ICONS = {
   table: new vscode.ThemeIcon("table"),
