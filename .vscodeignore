@@ -17,3 +17,4 @@ package-lock.json
 node_modules/**
 *.vsix
 .ruby-lsp/
+resources/preview*
