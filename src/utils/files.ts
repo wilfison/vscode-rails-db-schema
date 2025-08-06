@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import plur from "plur";
 
 export function currentDocument(): vscode.TextDocument | undefined {
   return vscode.window.activeTextEditor?.document;
@@ -23,6 +22,8 @@ export async function getSchemaUris(): Promise<vscode.Uri[]> {
 }
 
 export async function getCurrentTableName(): Promise<string | null> {
+  const plur = await require("plur");
+
   const modelPathRegex = /(?<=models\/)([\s\S]*?)(?=(.rb))/g;
 
   const currentDocumentPath = currentDocument()?.fileName;
