@@ -5,6 +5,11 @@ All notable changes to the "Rails Schema Explorer" extension will be documented 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3] - 2025-08-06
+
+- Fix pluralize imports.
+- Change pluralize lib.
+
 ## [1.0.2] - 2025-07-15
 
 - Adds option to copy the name of all columns in a table
