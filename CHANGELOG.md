@@ -1,9 +1,11 @@
 # Change Log
 
-All notable changes to the "Rails Schema Explorer" extension will be documented in this file.
+## [1.0.5] - 2025-11-28
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+- Add index and unique index icons in schema tree view.
+- Add icons to column list for better visualization.
+- Fix bug when open model file.
+- Remove `plur` dependency.
 
 ## [1.0.3] - 2025-08-06
 
