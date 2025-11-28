@@ -23,7 +23,7 @@
   ],
   "license": "MIT",
   "engines": {
-    "vscode": "^1.102.0"
+    "vscode": "^1.106.1"
   },
   "categories": [
     "Other"
