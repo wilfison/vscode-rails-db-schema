@@ -7,6 +7,8 @@ const ICONS = {
   table: new vscode.ThemeIcon("table"),
   field: new vscode.ThemeIcon("layout-centered"),
   primaryKey: new vscode.ThemeIcon("key", new vscode.ThemeColor("list.warningForeground")),
+  index: new vscode.ThemeIcon("symbol-property", new vscode.ThemeColor("charts.red")),
+  uniqueIndex: new vscode.ThemeIcon("key", new vscode.ThemeColor("charts.red")),
   // icons by column type
   string: new vscode.ThemeIcon("symbol-text", new vscode.ThemeColor("charts.blue")),
   text: new vscode.ThemeIcon("symbol-parameter", new vscode.ThemeColor("charts.blue")),
@@ -77,11 +79,18 @@ export default class SchemaTreeDataProvider implements vscode.TreeDataProvider<S
       };
     }
 
+    const contextValue = element.isTable
+      ? "schemaTable"
+      : element.isIndex
+      ? "schemaIndex"
+      : "schemaField";
+
     return {
-      label: element.type ? `${element.label} (${element.type})` : element.label,
+      label:
+        element.type && !element.isIndex ? `${element.label} (${element.type})` : element.label,
       description: element.description,
       tooltip: element.tooltip,
-      contextValue: element.isTable ? "schemaTable" : "schemaField",
+      contextValue: contextValue,
       collapsibleState: element.isTable ? vscode.TreeItemCollapsibleState.Collapsed : void 0,
       iconPath: this.getIconForNode(element),
     };
@@ -127,7 +136,16 @@ export default class SchemaTreeDataProvider implements vscode.TreeDataProvider<S
         return true;
       }
 
-      return table.children.some((column) => column.label.toLowerCase().includes(this.searchTerm));
+      return table.children.some((child) => {
+        if (child.label.toLowerCase().includes(this.searchTerm)) {
+          return true;
+        }
+        // Para índices, também buscar nas colunas do índice
+        if (child.isIndex && child.indexColumns) {
+          return child.indexColumns.some((col) => col.toLowerCase().includes(this.searchTerm));
+        }
+        return false;
+      });
     });
   }
 
@@ -138,6 +156,8 @@ export default class SchemaTreeDataProvider implements vscode.TreeDataProvider<S
   private getIconForNode(node: SchemaNode): vscode.ThemeIcon {
     if (node.isTable) {
       return ICONS.table;
+    } else if (node.isIndex) {
+      return node.isUnique ? ICONS.uniqueIndex : ICONS.index;
     } else if (node.isPrimaryKey) {
       return ICONS.primaryKey;
     } else if (node.type && TYPE_ICON_MAP[node.type]) {

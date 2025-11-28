@@ -8,6 +8,9 @@ interface SchemaNode {
   schemaUri?: Uri;
   isTable: boolean;
   isPrimaryKey?: boolean;
+  isIndex?: boolean;
+  indexColumns?: string[];
+  isUnique?: boolean;
   children: SchemaNode[];
   parent: SchemaNode | undefined;
   tableName: string;

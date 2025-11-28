@@ -69,9 +69,10 @@ export default class SchemaModel {
         schemaUri: this.uri,
       };
 
-      // Cria os nós filhos (colunas) e define o parent e tableName
-      const children = this.getTableFields(tableText, label, tableNode);
-      tableNode.children = children;
+      // Cria os nós filhos (colunas e índices) e define o parent e tableName
+      const fields = this.getTableFields(tableText, label, tableNode);
+      const indexes = this.getTableIndexes(tableText, label, tableNode);
+      tableNode.children = [...fields, ...indexes];
 
       return tableNode;
     });
@@ -109,6 +110,53 @@ export default class SchemaModel {
         tooltip: tooltip,
         isTable: false,
         isPrimaryKey: isPrimaryKey,
+        children: [],
+        parent: parentTable,
+        tableName: tableName,
+      };
+    });
+  }
+
+  private getTableIndexes(
+    tableText: string,
+    tableName: string,
+    parentTable?: SchemaNode
+  ): SchemaNode[] {
+    // Regex para capturar linhas de índice: t.index ["column"], name: "index_name", unique: true
+    const indexRegex = /t\.index\s+([\s\S]*?)(?=\n)/g;
+    const indexes = tableText.match(indexRegex) || [];
+
+    return indexes.map((indexText) => {
+      // Extrai as colunas do índice
+      const columnsMatch = indexText.match(/\[([\s\S]*?)\]/);
+      const columnsStr = columnsMatch ? columnsMatch[1] : "";
+      const columns = columnsStr
+        .split(",")
+        .map((col) => col.trim().replace(/["']/g, ""))
+        .filter(Boolean);
+
+      // Extrai o nome do índice
+      const nameMatch = indexText.match(/name:\s*["']([^"']+)["']/);
+      const indexName = nameMatch ? nameMatch[1] : columns.join("_");
+
+      // Verifica se é um índice único
+      const isUnique = /unique:\s*true/.test(indexText);
+
+      // Cria o label e tooltip
+      const label = `${indexName}`;
+      const columnsList = columns.join(", ");
+      const uniqueLabel = isUnique ? "Unique index" : "Index";
+      const tooltip = `${uniqueLabel} on [${columnsList}]`;
+
+      return {
+        label: label,
+        type: "index",
+        description: `[${columnsList}]`,
+        tooltip: tooltip,
+        isTable: false,
+        isIndex: true,
+        isUnique: isUnique,
+        indexColumns: columns,
         children: [],
         parent: parentTable,
         tableName: tableName,

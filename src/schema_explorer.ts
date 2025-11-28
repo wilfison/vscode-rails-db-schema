@@ -181,7 +181,7 @@ class SchemaExplorer {
 
     const reference = `${tableName}${fieldName}`;
     await vscode.env.clipboard.writeText(reference);
-    vscode.window.showInformationMessage(`Copied: ${reference}`);
+    vscode.window.setStatusBarMessage(`$(clippy) Copied reference: ${reference}`, 3000);
   }
 
   public async copyColumnNames(node: SchemaNode): Promise<void> {

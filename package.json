@@ -67,7 +67,7 @@
         },
         {
           "command": "rails-schemas.copyReference",
-          "when": "view == RailsDbSchema && (viewItem == schemaField || viewItem == schemaTable)",
+          "when": "view == RailsDbSchema && (viewItem == schemaField || viewItem == schemaTable || viewItem == schemaIndex)",
           "group": "inline"
         },
         {
