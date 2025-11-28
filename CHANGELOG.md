@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.0.6] - 2025-11-28
+
+- Feat: Show relevant infos for columns, like precision, scale, limit, and default values.
+- Fix: Copy only column names when copying columns from a table.
+- Update preview image.
+
 ## [1.0.5] - 2025-11-28
 
 - Add index and unique index icons in schema tree view.
