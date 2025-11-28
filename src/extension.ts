@@ -109,6 +109,12 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
+  context.subscriptions.push(
+    vscode.commands.registerCommand('rails-schemas.showStatistics', () => {
+      schemaExplorer.showStatistics();
+    })
+  );
+
   context.subscriptions.push(disposable);
 }
 

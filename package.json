@@ -57,6 +57,11 @@
           "command": "rails-schemas.clearSearch",
           "when": "view == RailsDbSchema && rails-schemas.hasActiveSearch",
           "group": "navigation@3"
+        },
+        {
+          "command": "rails-schemas.showStatistics",
+          "when": "view == RailsDbSchema",
+          "group": "navigation@4"
         }
       ],
       "view/item/context": [
@@ -111,6 +116,11 @@
         "command": "rails-schemas.clearSearch",
         "title": "Clear Search",
         "icon": "$(clear-all)"
+      },
+      {
+        "command": "rails-schemas.showStatistics",
+        "title": "Show Schema Statistics",
+        "icon": "$(graph)"
       }
     ],
     "views": {

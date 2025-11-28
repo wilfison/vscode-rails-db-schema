@@ -195,4 +195,25 @@ export default class SchemaTreeDataProvider implements vscode.TreeDataProvider<S
       tableName: '',
     };
   }
+
+  public getStatistics(): { tables: number; columns: number; indexes: number } {
+    let totalColumns = 0;
+    let totalIndexes = 0;
+
+    this.model.data.forEach((table) => {
+      table.children.forEach((child) => {
+        if (child.isIndex) {
+          totalIndexes++;
+        } else {
+          totalColumns++;
+        }
+      });
+    });
+
+    return {
+      tables: this.model.data.length,
+      columns: totalColumns,
+      indexes: totalIndexes,
+    };
+  }
 }

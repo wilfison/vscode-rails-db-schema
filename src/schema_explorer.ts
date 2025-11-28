@@ -201,6 +201,17 @@ class SchemaExplorer {
     }
   }
 
+  public showStatistics(): void {
+    const stats = this.treeDataProvider.getStatistics();
+    const message =
+      `Schema Statistics:\n\n` +
+      `📊 Tables: ${stats.tables}\n` +
+      `📋 Columns: ${stats.columns}\n` +
+      `🔍 Indexes: ${stats.indexes}`;
+
+    vscode.window.showInformationMessage(message, { modal: true });
+  }
+
   private updateViewTitle(): void {
     let title = '';
 

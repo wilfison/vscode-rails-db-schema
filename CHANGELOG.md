@@ -12,6 +12,7 @@
 - Filtering of Rails internal tables: `action_text_rich_texts`, `active_storage_attachments`, `active_storage_blobs`, `active_storage_variant_records`
 - Filtering of timestamp columns: `created_at`, `updated_at`
 - Automatic tree refresh when configuration changes
+- Schema statistics: View total number of tables, columns, and indexes with a single click
 
 ## [1.0.6] - 2025-11-28
 
