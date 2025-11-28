@@ -1,5 +1,5 @@
-import * as vscode from "vscode";
-import { pluralize } from "./plural";
+import * as vscode from 'vscode';
+import { pluralize } from './plural';
 
 export function currentDocument(): vscode.TextDocument | undefined {
   return vscode.window.activeTextEditor?.document;
@@ -16,7 +16,7 @@ export async function getSchemaUris(): Promise<vscode.Uri[]> {
     return [];
   }
 
-  let schemaFiles = await vscode.workspace.findFiles("**/db/*schema.rb", "**/node_modules/**");
+  let schemaFiles = await vscode.workspace.findFiles('**/db/*schema.rb', '**/node_modules/**');
   schemaFiles = schemaFiles.sort((a, b) => a.fsPath.localeCompare(b.fsPath));
 
   return schemaFiles.reverse();
@@ -28,7 +28,7 @@ export async function getCurrentTableName(): Promise<string | null> {
   const currentDocumentPath = currentDocument()?.fileName;
   const modelPathMatch = currentDocumentPath?.match(modelPathRegex);
   const modelPath = modelPathMatch ? modelPathMatch[0] : null;
-  const modelName = modelPath?.replace("/", "_");
+  const modelName = modelPath?.replace('/', '_');
 
   return modelName ? pluralize(modelName) : null;
 }
@@ -48,7 +48,7 @@ export async function lookForCustomTableName(): Promise<string | null> {
     return null;
   }
 
-  const customTableText = customTableMatch[0].trim().replace(/'|"/g, "");
+  const customTableText = customTableMatch[0].trim().replace(/'|"/g, '');
   return customTableText || null;
 }
 
@@ -59,5 +59,5 @@ export function currentDocumentIsModel(): boolean {
   }
 
   // Check if the current document is a Ruby file and matches the model file pattern
-  return document.languageId === "ruby" && document.fileName.match(/models\/.*\.rb$/) !== null;
+  return document.languageId === 'ruby' && document.fileName.match(/models\/.*\.rb$/) !== null;
 }

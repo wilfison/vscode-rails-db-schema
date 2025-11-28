@@ -1,8 +1,8 @@
-import * as vscode from "vscode";
+import * as vscode from 'vscode';
 
-import SchemaNode from "./schema_node.js";
-import SchemaModel from "./schema_model.js";
-import SchemaTreeDataProvider from "./schema_tree_data_provider.js";
+import SchemaNode from './schema_node.js';
+import SchemaModel from './schema_model.js';
+import SchemaTreeDataProvider from './schema_tree_data_provider.js';
 
 import {
   currentDocumentIsModel,
@@ -10,7 +10,7 @@ import {
   getCurrentTableName,
   getSchemaUris,
   lookForCustomTableName,
-} from "./utils/files.js";
+} from './utils/files.js';
 
 class SchemaExplorer {
   public treeDataProvider: SchemaTreeDataProvider;
@@ -21,11 +21,11 @@ class SchemaExplorer {
 
   constructor() {
     this.schemaModels = [];
-    this.currentSchemaModel = new SchemaModel(vscode.Uri.parse("/"));
+    this.currentSchemaModel = new SchemaModel(vscode.Uri.parse('/'));
 
     this.treeDataProvider = new SchemaTreeDataProvider(this.currentSchemaModel);
 
-    this.schemaViewer = vscode.window.createTreeView("RailsDbSchema", {
+    this.schemaViewer = vscode.window.createTreeView('RailsDbSchema', {
       treeDataProvider: this.treeDataProvider,
       showCollapseAll: true,
       canSelectMany: false,
@@ -43,8 +43,8 @@ class SchemaExplorer {
     }
 
     await vscode.commands.executeCommand(
-      "setContext",
-      "rails-schemas.hasMultipleSchemas",
+      'setContext',
+      'rails-schemas.hasMultipleSchemas',
       this.schemaModels.length > 1
     );
 
@@ -104,8 +104,8 @@ class SchemaExplorer {
 
   public async searchTables(): Promise<void> {
     const searchTerm = await vscode.window.showInputBox({
-      prompt: "Enter search term for table or column names",
-      placeHolder: "Search tables and columns...",
+      prompt: 'Enter search term for table or column names',
+      placeHolder: 'Search tables and columns...',
     });
 
     if (searchTerm !== undefined) {
@@ -121,25 +121,25 @@ class SchemaExplorer {
 
   public async selectSchema(): Promise<void> {
     if (this.schemaModels.length <= 1) {
-      vscode.window.showInformationMessage("Only one schema file found.");
+      vscode.window.showInformationMessage('Only one schema file found.');
       return;
     }
 
     const schemaOptions = this.schemaModels.map((model, index) => {
-      const fileName = model.uri.path.split("/").pop() || "Unknown";
-      const isActive = model === this.currentSchemaModel ? " ✓" : "";
+      const fileName = model.uri.path.split('/').pop() || 'Unknown';
+      const isActive = model === this.currentSchemaModel ? ' ✓' : '';
       const relativePath = vscode.workspace.asRelativePath(model.uri);
       return {
         label: `${fileName}${isActive}`,
         description: relativePath,
-        detail: isActive ? "Currently active schema" : undefined,
+        detail: isActive ? 'Currently active schema' : undefined,
         index: index,
         model: model,
       };
     });
 
     const selectedOption = await vscode.window.showQuickPick(schemaOptions, {
-      placeHolder: "Select a schema file to work with",
+      placeHolder: 'Select a schema file to work with',
       matchOnDescription: true,
       ignoreFocusOut: true,
     });
@@ -156,7 +156,7 @@ class SchemaExplorer {
 
   public async copyReference(node: SchemaNode): Promise<void> {
     let tableName: string;
-    let fieldName: string = node.isTable ? "" : `.${node.label}`;
+    let fieldName: string = node.isTable ? '' : `.${node.label}`;
 
     if (node.tableName) {
       tableName = node.tableName;
@@ -164,7 +164,7 @@ class SchemaExplorer {
       tableName = node.parent.label;
     } else {
       const allTables = this.currentSchemaModel.data;
-      tableName = "unknown_table";
+      tableName = 'unknown_table';
 
       for (const table of allTables) {
         if (table.children.some((child) => child.label === node.label)) {
@@ -173,7 +173,7 @@ class SchemaExplorer {
         }
       }
 
-      if (tableName === "unknown_table") {
+      if (tableName === 'unknown_table') {
         fieldName = node.label;
         return;
       }
@@ -186,26 +186,26 @@ class SchemaExplorer {
 
   public async copyColumnNames(node: SchemaNode): Promise<void> {
     if (!node.isTable) {
-      vscode.window.showErrorMessage("This command can only be used on table nodes.");
+      vscode.window.showErrorMessage('This command can only be used on table nodes.');
       return;
     }
 
     const columnNames = node.children
       .filter((child) => !child.isTable && !child.isIndex)
       .map((child) => child.label)
-      .join("\n");
+      .join('\n');
 
     if (columnNames) {
       await vscode.env.clipboard.writeText(columnNames);
-      vscode.window.showInformationMessage("Column names copied to clipboard.");
+      vscode.window.showInformationMessage('Column names copied to clipboard.');
     }
   }
 
   private updateViewTitle(): void {
-    let title = "";
+    let title = '';
 
     if (this.schemaModels.length > 1) {
-      const schemaName = this.currentSchemaModel.uri.path.split("/").pop() || "schema.rb";
+      const schemaName = this.currentSchemaModel.uri.path.split('/').pop() || 'schema.rb';
       title = `${schemaName}`;
     }
 

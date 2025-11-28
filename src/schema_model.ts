@@ -1,7 +1,7 @@
-import * as vscode from "vscode";
-import SchemaNode, { SchemaColumnAttributes } from "./schema_node.js";
-import { filterColumnAttributes } from "./utils/columns.js";
-import { rubyHashToJson } from "./utils/json.js";
+import * as vscode from 'vscode';
+import SchemaNode, { SchemaColumnAttributes } from './schema_node.js';
+import { filterColumnAttributes } from './utils/columns.js';
+import { rubyHashToJson } from './utils/json.js';
 
 export default class SchemaModel {
   public data: SchemaNode[];
@@ -13,7 +13,7 @@ export default class SchemaModel {
   }
 
   public schemaFIleName(): string {
-    return this.uri.fsPath.split("/").pop() || "schema.rb";
+    return this.uri.fsPath.split('/').pop() || 'schema.rb';
   }
 
   public async refreshSchema(): Promise<void> {
@@ -23,7 +23,7 @@ export default class SchemaModel {
   }
 
   public async getRailsSchema(): Promise<void> {
-    if (this.uri.fsPath === "/") {
+    if (this.uri.fsPath === '/') {
       return;
     }
 
@@ -56,9 +56,9 @@ export default class SchemaModel {
       const tableDefinitionMatch = tableText.match(tableDefinitionRegex);
       const commentsInfo = tableDefinitionMatch
         ? tableDefinitionMatch[0].match(commentsInfoRegex)
-        : "";
-      const label = tableLableMatch ? tableLableMatch[0] : "";
-      const tooltip = commentsInfo ? `${commentsInfo[0]}"` : "";
+        : '';
+      const label = tableLableMatch ? tableLableMatch[0] : '';
+      const tooltip = commentsInfo ? `${commentsInfo[0]}"` : '';
 
       // Create the table node
       const tableNode: SchemaNode = {
@@ -99,27 +99,27 @@ export default class SchemaModel {
       const typeMatch = fieldText.match(typeLabelRegex);
       const extraInfo = fieldText.match(extraInfoRegex);
       const commentsInfo = fieldText.match(commentsInfoRegex);
-      const label = fieldMatch ? fieldMatch[0] : "";
+      const label = fieldMatch ? fieldMatch[0] : '';
       const type = typeMatch ? typeMatch[0] : null;
-      const tooltip = commentsInfo ? commentsInfo[0] : "";
+      const tooltip = commentsInfo ? commentsInfo[0] : '';
       const isPrimaryKey =
-        (fieldMatch && fieldMatch[0] === "id") || fieldText.includes("primary_key:");
+        (fieldMatch && fieldMatch[0] === 'id') || fieldText.includes('primary_key:');
 
       const fieldConfig: Record<string, unknown> = extraInfo
         ? rubyHashToJson(`{${extraInfo[0]}}`)
         : {};
       const attributesDescription = filterColumnAttributes(
-        type || "",
+        type || '',
         fieldConfig as SchemaColumnAttributes
       );
 
       let description = `${type}`;
-      description += attributesDescription ? `, ${attributesDescription}` : "";
+      description += attributesDescription ? `, ${attributesDescription}` : '';
 
       return {
         label: label,
         type: type,
-        description: type ? `(${description})` : "",
+        description: type ? `(${description})` : '',
         tooltip: tooltip,
         isTable: false,
         isPrimaryKey: isPrimaryKey,
@@ -134,10 +134,10 @@ export default class SchemaModel {
     const declaresNoPrimaryKey = /primary_key:\s*false|id:\s*false/.test(tableText);
     if (!hasPrimaryKey && !declaresNoPrimaryKey) {
       fields.unshift({
-        label: "id",
-        type: "primary_key",
-        description: "(primary_key)",
-        tooltip: "Primary Key",
+        label: 'id',
+        type: 'primary_key',
+        description: '(primary_key)',
+        tooltip: 'Primary Key',
         isTable: false,
         isPrimaryKey: true,
         children: [],
@@ -161,28 +161,28 @@ export default class SchemaModel {
     return indexes.map((indexText) => {
       // Extract index columns
       const columnsMatch = indexText.match(/\[([\s\S]*?)\]/);
-      const columnsStr = columnsMatch ? columnsMatch[1] : "";
+      const columnsStr = columnsMatch ? columnsMatch[1] : '';
       const columns = columnsStr
-        .split(",")
-        .map((col) => col.trim().replace(/["']/g, ""))
+        .split(',')
+        .map((col) => col.trim().replace(/["']/g, ''))
         .filter(Boolean);
 
       // Extract index name
       const nameMatch = indexText.match(/name:\s*["']([^"']+)["']/);
-      const indexName = nameMatch ? nameMatch[1] : columns.join("_");
+      const indexName = nameMatch ? nameMatch[1] : columns.join('_');
 
       // Check if it's a unique index
       const isUnique = /unique:\s*true/.test(indexText);
 
       // Create label and tooltip
       const label = `${indexName}`;
-      const columnsList = columns.join(", ");
-      const uniqueLabel = isUnique ? " (unique)" : "";
+      const columnsList = columns.join(', ');
+      const uniqueLabel = isUnique ? ' (unique)' : '';
       const tooltip = `Index on [${columnsList}]${uniqueLabel}`;
 
       return {
         label: label,
-        type: "index",
+        type: 'index',
         description: `${uniqueLabel} [${columnsList}]`.trim(),
         tooltip: tooltip,
         isTable: false,

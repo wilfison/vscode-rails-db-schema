@@ -1,9 +1,9 @@
-import * as vscode from "vscode";
+import * as vscode from 'vscode';
 
-import SchemaExplorer from "./schema_explorer.js";
-import SchemaNode from "./schema_node.js";
-import { currentDocumentIsModel } from "./utils/files.js";
-import { debaunce } from "./utils/debaunce.js";
+import SchemaExplorer from './schema_explorer.js';
+import SchemaNode from './schema_node.js';
+import { currentDocumentIsModel } from './utils/files.js';
+import { debaunce } from './utils/debaunce.js';
 
 export function activate(context: vscode.ExtensionContext) {
   const schemaExplorer = new SchemaExplorer();
@@ -17,7 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     return workspaceFolders.map((folder) =>
       vscode.workspace.createFileSystemWatcher(
-        new vscode.RelativePattern(folder.uri.path, "**/db/*schema.rb")
+        new vscode.RelativePattern(folder.uri.path, '**/db/*schema.rb')
       )
     );
   };
@@ -45,12 +45,12 @@ export function activate(context: vscode.ExtensionContext) {
   const onDidChangeActiveEditor = vscode.window.onDidChangeActiveTextEditor(debaunceModel);
   context.subscriptions.push(onDidChangeActiveEditor);
 
-  let disposable = vscode.commands.registerCommand("rails-schemas.showRailsDbSchema", () =>
+  let disposable = vscode.commands.registerCommand('rails-schemas.showRailsDbSchema', () =>
     schemaExplorer.reveal()
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("rails-schemas.openInSchema", async (node: SchemaNode) => {
+    vscode.commands.registerCommand('rails-schemas.openInSchema', async (node: SchemaNode) => {
       if (node.schemaUri === undefined) {
         return;
       }
@@ -61,31 +61,31 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("rails-schemas.searchTables", () => {
+    vscode.commands.registerCommand('rails-schemas.searchTables', () => {
       schemaExplorer.searchTables();
     })
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("rails-schemas.clearSearch", () => {
+    vscode.commands.registerCommand('rails-schemas.clearSearch', () => {
       schemaExplorer.clearSearch();
     })
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("rails-schemas.selectSchema", () => {
+    vscode.commands.registerCommand('rails-schemas.selectSchema', () => {
       schemaExplorer.selectSchema();
     })
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("rails-schemas.copyReference", (node: SchemaNode) => {
+    vscode.commands.registerCommand('rails-schemas.copyReference', (node: SchemaNode) => {
       schemaExplorer.copyReference(node);
     })
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("rails-schemas.copyColumnNames", (node: SchemaNode) => {
+    vscode.commands.registerCommand('rails-schemas.copyColumnNames', (node: SchemaNode) => {
       schemaExplorer.copyColumnNames(node);
     })
   );

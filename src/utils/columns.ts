@@ -1,14 +1,14 @@
-import { SchemaColumnAttributes } from "../schema_node";
+import { SchemaColumnAttributes } from '../schema_node';
 
-const PRECISION_ATTRS = ["precision", "scale"];
+const PRECISION_ATTRS = ['precision', 'scale'];
 
 const COLUMN_RELEVANT_ATTRIBUTES = {
-  string: ["limit", "default"],
-  text: ["limit"],
-  integer: ["limit", "default"],
-  decimal: ["precision", "scale", "default"],
-  float: ["default"],
-  boolean: ["default"],
+  string: ['limit', 'default'],
+  text: ['limit'],
+  integer: ['limit', 'default'],
+  decimal: ['precision', 'scale', 'default'],
+  float: ['default'],
+  boolean: ['default'],
 };
 
 const MAP_COLUMN_TYPE_TO_ATTRIBUTES: { [key: string]: string[] } = {
@@ -30,7 +30,7 @@ function parsePrecisionScale(precision: number | undefined, scale: number | unde
     return `${precision - scale}.${scale}`;
   }
 
-  return "";
+  return '';
 }
 
 export function filterColumnAttributes(
@@ -40,10 +40,10 @@ export function filterColumnAttributes(
   const relevantAttributes = MAP_COLUMN_TYPE_TO_ATTRIBUTES[columnType];
   if (!relevantAttributes) {
     if (attributes.null === false) {
-      return "Not Null";
+      return 'Not Null';
     }
 
-    return "";
+    return '';
   }
 
   const filteredAttributes: string[] = [];
@@ -52,17 +52,17 @@ export function filterColumnAttributes(
     filteredAttributes.push(parsePrecisionScale(attributes.precision, attributes.scale));
   }
 
-  if (relevantAttributes.includes("limit") && attributes.limit !== undefined) {
+  if (relevantAttributes.includes('limit') && attributes.limit !== undefined) {
     filteredAttributes.push(`limit: ${attributes.limit}`);
   }
 
-  if (relevantAttributes.includes("default") && attributes.default !== undefined) {
+  if (relevantAttributes.includes('default') && attributes.default !== undefined) {
     filteredAttributes.push(`default: ${attributes.default}`);
   }
 
   if (attributes.null === false) {
-    filteredAttributes.push("Not Null");
+    filteredAttributes.push('Not Null');
   }
 
-  return filteredAttributes.join(", ");
+  return filteredAttributes.join(', ');
 }

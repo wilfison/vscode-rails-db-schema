@@ -1,23 +1,23 @@
-import * as vscode from "vscode";
+import * as vscode from 'vscode';
 
-import SchemaModel from "./schema_model.js";
-import SchemaNode from "./schema_node.js";
+import SchemaModel from './schema_model.js';
+import SchemaNode from './schema_node.js';
 
 const ICONS = {
-  table: new vscode.ThemeIcon("table"),
-  field: new vscode.ThemeIcon("layout-centered"),
-  primaryKey: new vscode.ThemeIcon("key", new vscode.ThemeColor("list.warningForeground")),
-  index: new vscode.ThemeIcon("symbol-property", new vscode.ThemeColor("charts.red")),
-  uniqueIndex: new vscode.ThemeIcon("key", new vscode.ThemeColor("charts.red")),
+  table: new vscode.ThemeIcon('table'),
+  field: new vscode.ThemeIcon('layout-centered'),
+  primaryKey: new vscode.ThemeIcon('key', new vscode.ThemeColor('list.warningForeground')),
+  index: new vscode.ThemeIcon('symbol-property', new vscode.ThemeColor('charts.red')),
+  uniqueIndex: new vscode.ThemeIcon('key', new vscode.ThemeColor('charts.red')),
   // icons by column type
-  string: new vscode.ThemeIcon("symbol-text", new vscode.ThemeColor("charts.blue")),
-  text: new vscode.ThemeIcon("symbol-parameter", new vscode.ThemeColor("charts.blue")),
-  integer: new vscode.ThemeIcon("symbol-number", new vscode.ThemeColor("charts.yellow")),
-  float: new vscode.ThemeIcon("regex", new vscode.ThemeColor("charts.yellow")),
-  boolean: new vscode.ThemeIcon("symbol-boolean", new vscode.ThemeColor("charts.green")),
-  date: new vscode.ThemeIcon("calendar", new vscode.ThemeColor("charts.purple")),
-  datetime: new vscode.ThemeIcon("clock", new vscode.ThemeColor("charts.purple")),
-  json: new vscode.ThemeIcon("symbol-object", new vscode.ThemeColor("charts.orange")),
+  string: new vscode.ThemeIcon('symbol-text', new vscode.ThemeColor('charts.blue')),
+  text: new vscode.ThemeIcon('symbol-parameter', new vscode.ThemeColor('charts.blue')),
+  integer: new vscode.ThemeIcon('symbol-number', new vscode.ThemeColor('charts.yellow')),
+  float: new vscode.ThemeIcon('regex', new vscode.ThemeColor('charts.yellow')),
+  boolean: new vscode.ThemeIcon('symbol-boolean', new vscode.ThemeColor('charts.green')),
+  date: new vscode.ThemeIcon('calendar', new vscode.ThemeColor('charts.purple')),
+  datetime: new vscode.ThemeIcon('clock', new vscode.ThemeColor('charts.purple')),
+  json: new vscode.ThemeIcon('symbol-object', new vscode.ThemeColor('charts.orange')),
 };
 
 const TYPE_ICON_MAP: { [key: string]: vscode.ThemeIcon } = {
@@ -48,7 +48,7 @@ export default class SchemaTreeDataProvider implements vscode.TreeDataProvider<S
   readonly onDidChangeTreeData: vscode.Event<SchemaNode | undefined | null | void> =
     this._onDidChangeTreeData.event;
 
-  public searchTerm: string = "";
+  public searchTerm: string = '';
 
   constructor(public model: SchemaModel) {}
 
@@ -66,24 +66,24 @@ export default class SchemaTreeDataProvider implements vscode.TreeDataProvider<S
   }
 
   public getTreeItem(element: SchemaNode): vscode.TreeItem {
-    if (element.label.includes("result(s) for") || element.label.includes("No results for")) {
+    if (element.label.includes('result(s) for') || element.label.includes('No results for')) {
       return {
         label: element.label,
         description: element.description,
         tooltip: element.tooltip,
-        contextValue: "searchInfo",
+        contextValue: 'searchInfo',
         collapsibleState: vscode.TreeItemCollapsibleState.None,
-        iconPath: element.label.includes("No results")
-          ? new vscode.ThemeIcon("warning", new vscode.ThemeColor("list.warningForeground"))
-          : new vscode.ThemeIcon("search", new vscode.ThemeColor("list.highlightForeground")),
+        iconPath: element.label.includes('No results')
+          ? new vscode.ThemeIcon('warning', new vscode.ThemeColor('list.warningForeground'))
+          : new vscode.ThemeIcon('search', new vscode.ThemeColor('list.highlightForeground')),
       };
     }
 
     const contextValue = element.isTable
-      ? "schemaTable"
+      ? 'schemaTable'
       : element.isIndex
-      ? "schemaIndex"
-      : "schemaField";
+      ? 'schemaIndex'
+      : 'schemaField';
 
     return {
       label: element.label,
@@ -116,16 +116,16 @@ export default class SchemaTreeDataProvider implements vscode.TreeDataProvider<S
   public setSearchTerm(searchTerm: string): void {
     this.searchTerm = searchTerm.toLowerCase();
     vscode.commands.executeCommand(
-      "setContext",
-      "rails-schemas.hasActiveSearch",
+      'setContext',
+      'rails-schemas.hasActiveSearch',
       searchTerm.length > 0
     );
     this._onDidChangeTreeData.fire();
   }
 
   public clearSearch(): void {
-    this.searchTerm = "";
-    vscode.commands.executeCommand("setContext", "rails-schemas.hasActiveSearch", false);
+    this.searchTerm = '';
+    vscode.commands.executeCommand('setContext', 'rails-schemas.hasActiveSearch', false);
     this._onDidChangeTreeData.fire();
   }
 
@@ -170,14 +170,14 @@ export default class SchemaTreeDataProvider implements vscode.TreeDataProvider<S
     return {
       label: `${resultCount} result(s) for "${this.searchTerm}"`,
       type: null,
-      description: "",
+      description: '',
       tooltip: `${resultCount} tables match the search term "${this.searchTerm}"`,
       isTable: false,
       isPrimaryKey: false,
       children: [],
       parent: undefined,
       schemaUri: undefined,
-      tableName: "",
+      tableName: '',
     };
   }
 
@@ -185,14 +185,14 @@ export default class SchemaTreeDataProvider implements vscode.TreeDataProvider<S
     return {
       label: `No results for "${this.searchTerm}"`,
       type: null,
-      description: "",
+      description: '',
       tooltip: `No tables or columns match the search term "${this.searchTerm}"`,
       isTable: false,
       isPrimaryKey: false,
       children: [],
       parent: undefined,
       schemaUri: undefined,
-      tableName: "",
+      tableName: '',
     };
   }
 }
