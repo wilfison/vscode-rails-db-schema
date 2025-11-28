@@ -60,7 +60,7 @@ export default class SchemaModel {
       const label = tableLableMatch ? tableLableMatch[0] : "";
       const tooltip = commentsInfo ? `${commentsInfo[0]}"` : "";
 
-      // Cria o nó da tabela
+      // Create the table node
       const tableNode: SchemaNode = {
         label: label,
         type: null,
@@ -72,7 +72,7 @@ export default class SchemaModel {
         schemaUri: this.uri,
       };
 
-      // Cria os nós filhos (colunas e índices) e define o parent e tableName
+      // Create child nodes (columns and indexes) and set parent and tableName
       const fields = this.getTableFields(tableText, label, tableNode);
       const indexes = this.getTableIndexes(tableText, label, tableNode);
       tableNode.children = [...fields, ...indexes];
@@ -154,12 +154,12 @@ export default class SchemaModel {
     tableName: string,
     parentTable?: SchemaNode
   ): SchemaNode[] {
-    // Regex para capturar linhas de índice: t.index ["column"], name: "index_name", unique: true
+    // Regex to capture index lines: t.index ["column"], name: "index_name", unique: true
     const indexRegex = /t\.index\s+([\s\S]*?)(?=\n)/g;
     const indexes = tableText.match(indexRegex) || [];
 
     return indexes.map((indexText) => {
-      // Extrai as colunas do índice
+      // Extract index columns
       const columnsMatch = indexText.match(/\[([\s\S]*?)\]/);
       const columnsStr = columnsMatch ? columnsMatch[1] : "";
       const columns = columnsStr
@@ -167,14 +167,14 @@ export default class SchemaModel {
         .map((col) => col.trim().replace(/["']/g, ""))
         .filter(Boolean);
 
-      // Extrai o nome do índice
+      // Extract index name
       const nameMatch = indexText.match(/name:\s*["']([^"']+)["']/);
       const indexName = nameMatch ? nameMatch[1] : columns.join("_");
 
-      // Verifica se é um índice único
+      // Check if it's a unique index
       const isUnique = /unique:\s*true/.test(indexText);
 
-      // Cria o label e tooltip
+      // Create label and tooltip
       const label = `${indexName}`;
       const columnsList = columns.join(", ");
       const uniqueLabel = isUnique ? " (unique)" : "";

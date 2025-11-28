@@ -3,13 +3,12 @@ import { SchemaColumnAttributes } from "../schema_node";
 const PRECISION_ATTRS = ["precision", "scale"];
 
 const COLUMN_RELEVANT_ATTRIBUTES = {
-  string: ["limit", "default", "null"],
-  text: ["limit", "null"],
-  integer: ["limit", "default", "null"],
-  decimal: ["precision", "scale", "default", "null"],
-  float: ["default", "null"],
-  boolean: ["default", "null"],
-  json: ["null"],
+  string: ["limit", "default"],
+  text: ["limit"],
+  integer: ["limit", "default"],
+  decimal: ["precision", "scale", "default"],
+  float: ["default"],
+  boolean: ["default"],
 };
 
 const MAP_COLUMN_TYPE_TO_ATTRIBUTES: { [key: string]: string[] } = {
@@ -24,8 +23,6 @@ const MAP_COLUMN_TYPE_TO_ATTRIBUTES: { [key: string]: string[] } = {
   double: COLUMN_RELEVANT_ATTRIBUTES.float,
   boolean: COLUMN_RELEVANT_ATTRIBUTES.boolean,
   bool: COLUMN_RELEVANT_ATTRIBUTES.boolean,
-  json: COLUMN_RELEVANT_ATTRIBUTES.json,
-  jsonb: COLUMN_RELEVANT_ATTRIBUTES.json,
 };
 
 function parsePrecisionScale(precision: number | undefined, scale: number | undefined): string {
@@ -42,6 +39,10 @@ export function filterColumnAttributes(
 ): string {
   const relevantAttributes = MAP_COLUMN_TYPE_TO_ATTRIBUTES[columnType];
   if (!relevantAttributes) {
+    if (attributes.null === false) {
+      return "Not Null";
+    }
+
     return "";
   }
 
@@ -59,7 +60,7 @@ export function filterColumnAttributes(
     filteredAttributes.push(`default: ${attributes.default}`);
   }
 
-  if (relevantAttributes.includes("null") && attributes.null === false) {
+  if (attributes.null === false) {
     filteredAttributes.push("Not Null");
   }
 

@@ -139,7 +139,7 @@ export default class SchemaTreeDataProvider implements vscode.TreeDataProvider<S
         if (child.label.toLowerCase().includes(this.searchTerm)) {
           return true;
         }
-        // Para índices, também buscar nas colunas do índice
+        // For indexes, also search in index columns
         if (child.isIndex && child.indexColumns) {
           return child.indexColumns.some((col) => col.toLowerCase().includes(this.searchTerm));
         }
