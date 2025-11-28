@@ -119,7 +119,7 @@ export default class SchemaModel {
       return {
         label: label,
         type: type,
-        description: `(${description})`,
+        description: type ? `(${description})` : "",
         tooltip: tooltip,
         isTable: false,
         isPrimaryKey: isPrimaryKey,
