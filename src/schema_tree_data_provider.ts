@@ -86,8 +86,7 @@ export default class SchemaTreeDataProvider implements vscode.TreeDataProvider<S
       : "schemaField";
 
     return {
-      label:
-        element.type && !element.isIndex ? `${element.label} (${element.type})` : element.label,
+      label: element.label,
       description: element.description,
       tooltip: element.tooltip,
       contextValue: contextValue,

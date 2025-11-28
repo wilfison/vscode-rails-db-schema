@@ -106,7 +106,7 @@ export default class SchemaModel {
       return {
         label: label,
         type: type,
-        description: description,
+        description: `(${type}) ${description}`.trim(),
         tooltip: tooltip,
         isTable: false,
         isPrimaryKey: isPrimaryKey,
@@ -145,13 +145,13 @@ export default class SchemaModel {
       // Cria o label e tooltip
       const label = `${indexName}`;
       const columnsList = columns.join(", ");
-      const uniqueLabel = isUnique ? "Unique index" : "Index";
-      const tooltip = `${uniqueLabel} on [${columnsList}]`;
+      const uniqueLabel = isUnique ? " (unique)" : "";
+      const tooltip = `Index on [${columnsList}]${uniqueLabel}`;
 
       return {
         label: label,
         type: "index",
-        description: `[${columnsList}]`,
+        description: `${uniqueLabel} [${columnsList}]`.trim(),
         tooltip: tooltip,
         isTable: false,
         isIndex: true,
