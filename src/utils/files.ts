@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { pluralize } from "./plural";
 
 export function currentDocument(): vscode.TextDocument | undefined {
   return vscode.window.activeTextEditor?.document;
@@ -22,8 +23,6 @@ export async function getSchemaUris(): Promise<vscode.Uri[]> {
 }
 
 export async function getCurrentTableName(): Promise<string | null> {
-  const plur = await require("plur");
-
   const modelPathRegex = /(?<=models\/)([\s\S]*?)(?=(.rb))/g;
 
   const currentDocumentPath = currentDocument()?.fileName;
@@ -31,7 +30,7 @@ export async function getCurrentTableName(): Promise<string | null> {
   const modelPath = modelPathMatch ? modelPathMatch[0] : null;
   const modelName = modelPath?.replace("/", "_");
 
-  return modelName ? plur(modelName) : null;
+  return modelName ? pluralize(modelName) : null;
 }
 
 export async function lookForCustomTableName(): Promise<string | null> {
