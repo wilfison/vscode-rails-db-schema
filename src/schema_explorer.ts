@@ -191,7 +191,7 @@ class SchemaExplorer {
     }
 
     const columnNames = node.children
-      .filter((child) => !child.isTable)
+      .filter((child) => !child.isTable && !child.isIndex)
       .map((child) => child.label)
       .join("\n");
 
