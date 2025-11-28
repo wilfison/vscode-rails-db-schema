@@ -1,5 +1,7 @@
 import * as vscode from "vscode";
-import SchemaNode from "./schema_node.js";
+import SchemaNode, { SchemaColumnAttributes } from "./schema_node.js";
+import { filterColumnAttributes } from "./utils/columns.js";
+import { rubyHashToJson } from "./utils/json.js";
 
 export default class SchemaModel {
   public data: SchemaNode[];
@@ -38,8 +40,9 @@ export default class SchemaModel {
 
       const schemaNodes = this.getSchemaNodes(tablesRegexMatch);
       this.data = schemaNodes;
-    } catch (_err) {
+    } catch (err) {
       vscode.window.showInformationMessage(`Error parsing schema file: ${this.schemaFIleName()}`);
+      throw err;
     }
   }
 
@@ -87,26 +90,36 @@ export default class SchemaModel {
       /(?= t\.(?!index))([\s\S]*?)(?=\n)|(primary_key:[\s\S]*?)\sdo\s\|t\|(?=\n)/g;
     const fieldLabelRegex = /(?<=")([\s\S]*?)(?=("))/g;
     const typeLabelRegex = /(?<=t\.)([\s\S]*?)(?=( ))|(?<=id:\s:)([\s\S]*?)(?=[,\s])/g;
-    const extraInfoRegex = /(?<=,)([\s\S]*?)(?=(, comment))/g;
+    const extraInfoRegex = /(?<=,)[\s\S]*?(.*)(?:\s*do\s*\|\w*\|)?/g;
     const commentsInfoRegex = /(?=comment: )([\s\S]*?)*("|')/;
-    const fields = tableText.match(fieldsRegex) || [];
+    const matchFields = tableText.match(fieldsRegex) || [];
 
-    return fields.map((fieldText) => {
+    const fields = matchFields.map((fieldText) => {
       const fieldMatch = fieldText.match(fieldLabelRegex);
       const typeMatch = fieldText.match(typeLabelRegex);
       const extraInfo = fieldText.match(extraInfoRegex);
       const commentsInfo = fieldText.match(commentsInfoRegex);
       const label = fieldMatch ? fieldMatch[0] : "";
       const type = typeMatch ? typeMatch[0] : null;
-      const description = extraInfo ? extraInfo[0] : "";
       const tooltip = commentsInfo ? commentsInfo[0] : "";
       const isPrimaryKey =
         (fieldMatch && fieldMatch[0] === "id") || fieldText.includes("primary_key:");
 
+      const fieldConfig: Record<string, unknown> = extraInfo
+        ? rubyHashToJson(`{${extraInfo[0]}}`)
+        : {};
+      const attributesDescription = filterColumnAttributes(
+        type || "",
+        fieldConfig as SchemaColumnAttributes
+      );
+
+      let description = `${type}`;
+      description += attributesDescription ? `, ${attributesDescription}` : "";
+
       return {
         label: label,
         type: type,
-        description: `(${type}) ${description}`.trim(),
+        description: `(${description})`,
         tooltip: tooltip,
         isTable: false,
         isPrimaryKey: isPrimaryKey,
@@ -115,6 +128,25 @@ export default class SchemaModel {
         tableName: tableName,
       };
     });
+
+    // Add primary key field if not present and table has not declare 'primary_key: false'
+    const hasPrimaryKey = fields.some((field) => field.isPrimaryKey);
+    const declaresNoPrimaryKey = /primary_key:\s*false|id:\s*false/.test(tableText);
+    if (!hasPrimaryKey && !declaresNoPrimaryKey) {
+      fields.unshift({
+        label: "id",
+        type: "primary_key",
+        description: "(primary_key)",
+        tooltip: "Primary Key",
+        isTable: false,
+        isPrimaryKey: true,
+        children: [],
+        parent: parentTable,
+        tableName: tableName,
+      });
+    }
+
+    return fields;
   }
 
   private getTableIndexes(
