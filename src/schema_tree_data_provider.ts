@@ -7,6 +7,36 @@ const ICONS = {
   table: new vscode.ThemeIcon("table"),
   field: new vscode.ThemeIcon("layout-centered"),
   primaryKey: new vscode.ThemeIcon("key", new vscode.ThemeColor("list.warningForeground")),
+  // icons by column type
+  string: new vscode.ThemeIcon("symbol-text", new vscode.ThemeColor("charts.blue")),
+  text: new vscode.ThemeIcon("symbol-parameter", new vscode.ThemeColor("charts.blue")),
+  integer: new vscode.ThemeIcon("symbol-number", new vscode.ThemeColor("charts.yellow")),
+  float: new vscode.ThemeIcon("regex", new vscode.ThemeColor("charts.yellow")),
+  boolean: new vscode.ThemeIcon("symbol-boolean", new vscode.ThemeColor("charts.green")),
+  date: new vscode.ThemeIcon("calendar", new vscode.ThemeColor("charts.purple")),
+  datetime: new vscode.ThemeIcon("clock", new vscode.ThemeColor("charts.purple")),
+  json: new vscode.ThemeIcon("symbol-object", new vscode.ThemeColor("charts.orange")),
+};
+
+const TYPE_ICON_MAP: { [key: string]: vscode.ThemeIcon } = {
+  string: ICONS.string,
+  text: ICONS.text,
+  text_basic: ICONS.text,
+  integer: ICONS.integer,
+  boolean: ICONS.boolean,
+  date: ICONS.date,
+  datetime: ICONS.datetime,
+  dateonly: ICONS.date,
+  timestamp: ICONS.datetime,
+  varchar: ICONS.string,
+  int: ICONS.integer,
+  bigint: ICONS.integer,
+  decimal: ICONS.float,
+  float: ICONS.float,
+  double: ICONS.float,
+  bool: ICONS.boolean,
+  json: ICONS.json,
+  jsonb: ICONS.json,
 };
 
 export default class SchemaTreeDataProvider implements vscode.TreeDataProvider<SchemaNode> {
@@ -110,6 +140,8 @@ export default class SchemaTreeDataProvider implements vscode.TreeDataProvider<S
       return ICONS.table;
     } else if (node.isPrimaryKey) {
       return ICONS.primaryKey;
+    } else if (node.type && TYPE_ICON_MAP[node.type]) {
+      return TYPE_ICON_MAP[node.type];
     } else {
       return ICONS.field;
     }
