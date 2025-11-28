@@ -128,7 +128,32 @@
         "key": "ctrl+f",
         "when": "focusedView == RailsDbSchema"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Rails Schema Explorer",
+      "properties": {
+        "rails-schemas.autoReveal": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically reveal the table in the schema explorer when opening a Rails model file"
+        },
+        "rails-schemas.showIndexes": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show database indexes in the schema tree"
+        },
+        "rails-schemas.showTimestamps": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show timestamp columns (created_at, updated_at) in the schema tree"
+        },
+        "rails-schemas.showRailsTables": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show Rails internal tables (action_text_rich_texts, active_storage_*, etc.) in the schema tree"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",

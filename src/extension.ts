@@ -4,6 +4,7 @@ import SchemaExplorer from './schema_explorer.js';
 import SchemaNode from './schema_node.js';
 import { currentDocumentIsModel } from './utils/files.js';
 import { debaunce } from './utils/debaunce.js';
+import { getConfig } from './utils/config.js';
 
 export function activate(context: vscode.ExtensionContext) {
   const schemaExplorer = new SchemaExplorer();
@@ -37,13 +38,31 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Automatically reveal model table when the active editor changes
   const debaunceModel = debaunce(async (editor) => {
-    if (editor?.document && currentDocumentIsModel() && schemaExplorer.isViewVisible()) {
+    const config = getConfig();
+    if (
+      config.autoReveal &&
+      editor?.document &&
+      currentDocumentIsModel() &&
+      schemaExplorer.isViewVisible()
+    ) {
       await schemaExplorer.revealTables();
     }
   }, 300);
 
   const onDidChangeActiveEditor = vscode.window.onDidChangeActiveTextEditor(debaunceModel);
   context.subscriptions.push(onDidChangeActiveEditor);
+
+  // Reload tree when configuration changes
+  const onDidChangeConfiguration = vscode.workspace.onDidChangeConfiguration((event) => {
+    if (
+      event.affectsConfiguration('rails-schemas.showIndexes') ||
+      event.affectsConfiguration('rails-schemas.showTimestamps') ||
+      event.affectsConfiguration('rails-schemas.showRailsTables')
+    ) {
+      schemaExplorer.treeDataProvider.refresh();
+    }
+  });
+  context.subscriptions.push(onDidChangeConfiguration);
 
   let disposable = vscode.commands.registerCommand('rails-schemas.showRailsDbSchema', () =>
     schemaExplorer.reveal()

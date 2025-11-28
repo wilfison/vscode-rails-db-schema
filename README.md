@@ -47,6 +47,42 @@ Click on any table in the tree view to jump directly to its definition in the `s
 
 ## Configuration
 
+This extension provides several configuration options to customize your experience:
+
+### Available Settings
+
+- **`rails-schemas.autoReveal`** (default: `true`)
+
+  - Automatically reveal the table in the schema explorer when opening a Rails model file
+
+- **`rails-schemas.showIndexes`** (default: `true`)
+
+  - Show database indexes in the schema tree
+
+- **`rails-schemas.showTimestamps`** (default: `true`)
+
+  - Show timestamp columns (`created_at`, `updated_at`) in the schema tree
+
+- **`rails-schemas.showRailsTables`** (default: `true`)
+  - Show Rails internal tables in the schema tree:
+    - `action_text_rich_texts`
+    - `active_storage_attachments`
+    - `active_storage_blobs`
+    - `active_storage_variant_records`
+
+### Example Configuration
+
+Add these settings to your VS Code settings (File > Preferences > Settings or `settings.json`):
+
+```json
+{
+  "rails-schemas.autoReveal": true,
+  "rails-schemas.showIndexes": true,
+  "rails-schemas.showTimestamps": false,
+  "rails-schemas.showRailsTables": false
+}
+```
+
 This extension works out of the box with standard Rails applications. It automatically detects schema files matching the pattern `**/db/*schema.rb`.
 
 ## Contributing

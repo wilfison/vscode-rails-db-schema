@@ -1,5 +1,18 @@
 # Change Log
 
+## [Unreleased]
+
+### Added
+
+- New configuration options to customize the schema explorer:
+  - `rails-schemas.autoReveal`: Automatically reveal tables when opening model files (default: `true`)
+  - `rails-schemas.showIndexes`: Toggle visibility of database indexes (default: `true`)
+  - `rails-schemas.showTimestamps`: Toggle visibility of timestamp columns (default: `true`)
+  - `rails-schemas.showRailsTables`: Toggle visibility of Rails internal tables (default: `true`)
+- Filtering of Rails internal tables: `action_text_rich_texts`, `active_storage_attachments`, `active_storage_blobs`, `active_storage_variant_records`
+- Filtering of timestamp columns: `created_at`, `updated_at`
+- Automatic tree refresh when configuration changes
+
 ## [1.0.6] - 2025-11-28
 
 - Feat: Show relevant infos for columns, like precision, scale, limit, and default values.

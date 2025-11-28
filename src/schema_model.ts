@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import SchemaNode, { SchemaColumnAttributes } from './schema_node.js';
 import { filterColumnAttributes } from './utils/columns.js';
 import { rubyHashToJson } from './utils/json.js';
+import { getConfig, RAILS_INTERNAL_TABLES, TIMESTAMP_COLUMNS } from './utils/config.js';
 
 export default class SchemaModel {
   public data: SchemaNode[];
@@ -50,8 +51,9 @@ export default class SchemaModel {
     const tableNameRegex = /(?<=create_table ")([\s\S]*?)(?=("))/g;
     const tableDefinitionRegex = /(?=create_table )([\s\S]*?)(do)/g;
     const commentsInfoRegex = /(?=comment: )([\s\S]*?)(?=(" do)|(",))/;
+    const config = getConfig();
 
-    return tablesRegexMatch.map((tableText) => {
+    const schemaNodes = tablesRegexMatch.map((tableText) => {
       const tableLableMatch = tableText.match(tableNameRegex);
       const tableDefinitionMatch = tableText.match(tableDefinitionRegex);
       const commentsInfo = tableDefinitionMatch
@@ -79,6 +81,13 @@ export default class SchemaModel {
 
       return tableNode;
     });
+
+    // Filter Rails internal tables if showRailsTables is false
+    if (!config.showRailsTables) {
+      return schemaNodes.filter((node) => !RAILS_INTERNAL_TABLES.includes(node.label));
+    }
+
+    return schemaNodes;
   }
 
   private getTableFields(
@@ -93,6 +102,7 @@ export default class SchemaModel {
     const extraInfoRegex = /(?<=,)[\s\S]*?(.*)(?:\s*do\s*\|\w*\|)?/g;
     const commentsInfoRegex = /(?=comment: )([\s\S]*?)*("|')/;
     const matchFields = tableText.match(fieldsRegex) || [];
+    const config = getConfig();
 
     const fields = matchFields.map((fieldText) => {
       const fieldMatch = fieldText.match(fieldLabelRegex);
@@ -129,11 +139,16 @@ export default class SchemaModel {
       };
     });
 
+    // Filter timestamp columns if showTimestamps is false
+    const filteredFields = !config.showTimestamps
+      ? fields.filter((field) => !TIMESTAMP_COLUMNS.includes(field.label))
+      : fields;
+
     // Add primary key field if not present and table has not declare 'primary_key: false'
-    const hasPrimaryKey = fields.some((field) => field.isPrimaryKey);
+    const hasPrimaryKey = filteredFields.some((field) => field.isPrimaryKey);
     const declaresNoPrimaryKey = /primary_key:\s*false|id:\s*false/.test(tableText);
     if (!hasPrimaryKey && !declaresNoPrimaryKey) {
-      fields.unshift({
+      filteredFields.unshift({
         label: 'id',
         type: 'primary_key',
         description: '(primary_key)',
@@ -146,7 +161,7 @@ export default class SchemaModel {
       });
     }
 
-    return fields;
+    return filteredFields;
   }
 
   private getTableIndexes(
@@ -154,6 +169,13 @@ export default class SchemaModel {
     tableName: string,
     parentTable?: SchemaNode
   ): SchemaNode[] {
+    const config = getConfig();
+
+    // Return empty array if showIndexes is false
+    if (!config.showIndexes) {
+      return [];
+    }
+
     // Regex to capture index lines: t.index ["column"], name: "index_name", unique: true
     const indexRegex = /t\.index\s+([\s\S]*?)(?=\n)/g;
     const indexes = tableText.match(indexRegex) || [];
