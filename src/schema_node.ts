@@ -22,7 +22,7 @@ interface SchemaNode {
   children: SchemaNode[];
   parent: SchemaNode | undefined;
   tableName: string;
-  attributes?: string;
+  attributes?: SchemaColumnAttributes;
 }
 
 export default SchemaNode;

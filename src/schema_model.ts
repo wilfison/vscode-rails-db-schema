@@ -123,7 +123,7 @@ export default class SchemaModel {
         fieldConfig as SchemaColumnAttributes
       );
 
-      let description = `${type}`;
+      let description = `${isPrimaryKey ? 'PK' : type}`;
       description += attributesDescription ? `, ${attributesDescription}` : '';
 
       return {
@@ -136,6 +136,7 @@ export default class SchemaModel {
         children: [],
         parent: parentTable,
         tableName: tableName,
+        attributes: fieldConfig,
       };
     });
 
@@ -151,13 +152,14 @@ export default class SchemaModel {
       filteredFields.unshift({
         label: 'id',
         type: 'primary_key',
-        description: '(primary_key)',
+        description: '(PK)',
         tooltip: 'Primary Key',
         isTable: false,
         isPrimaryKey: true,
         children: [],
         parent: parentTable,
         tableName: tableName,
+        attributes: {},
       });
     }
 
