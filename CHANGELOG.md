@@ -1,8 +1,6 @@
 # Change Log
 
-## [Unreleased]
-
-### Added
+## [1.0.7] - 2025-11-29
 
 - New configuration options to customize the schema explorer:
   - `rails-schemas.autoReveal`: Automatically reveal tables when opening model files (default: `true`)
